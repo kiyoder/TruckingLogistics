@@ -1,0 +1,12 @@
+<h2>Customer List</h2>
+<a href="{% url 'customer_create' %}">Add Customer</a>
+<ul>
+    {% for customer in customers %}
+        <li>{{ customer.name }} - {{ customer.email }}
+            <a href="{% url 'customer_update' customer.customer_id %}">Edit</a> |
+            <a href="{% url 'customer_delete' customer.customer_id %}">Delete</a>
+        </li>
+    {% empty %}
+        <li>No customers available.</li>
+    {% endfor %}
+</ul>

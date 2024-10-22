@@ -1,0 +1,7 @@
+<h2>Delete Container</h2>
+<p>Are you sure you want to delete this container?</p>
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Confirm</button>
+</form>
+<a href="{% url 'container_list' %}">Cancel</a>

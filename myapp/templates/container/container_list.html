@@ -1,0 +1,10 @@
+<h2>Containers</h2>
+<a href="{% url 'container_create' %}">Add Container</a>
+<ul>
+    {% for container in containers %}
+        <li>{{ container.contents }} - {{ container.status }}
+            <a href="{% url 'container_update' container.container_id %}">Edit</a> |
+            <a href="{% url 'container_delete' container.container_id %}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>
