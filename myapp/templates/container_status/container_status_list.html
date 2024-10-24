@@ -1,0 +1,10 @@
+<h2>Container Statuses</h2>
+<a href="{% url 'container_status_create' %}">Add Status</a>
+<ul>
+    {% for status in statuses %}
+        <li>{{ status.status }} - {{ status.recipient_name }}
+            <a href="{% url 'container_status_update' status.status_id %}">Edit</a> |
+            <a href="{% url 'container_status_delete' status.status_id %}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>
