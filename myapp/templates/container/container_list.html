@@ -1,10 +1,23 @@
-<h2>Containers</h2>
-<a href="{% url 'container_create' %}">Add Container</a>
-<ul>
-    {% for container in containers %}
-        <li>{{ container.contents }} - {{ container.status }}
-            <a href="{% url 'container_update' container.container_id %}">Edit</a> |
-            <a href="{% url 'container_delete' container.container_id %}">Delete</a>
-        </li>
-    {% endfor %}
-</ul>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h2>Containers</h2>
+        </div>
+        <div class="card-body">
+            <a href="{% url 'container_create' %}" class="btn btn-success mb-3">Add Container</a>
+            <ul class="list-group">
+                {% for container in containers %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ container.contents }} - {{ container.status }}</span>
+                        <span>
+                            <a href="{% url 'container_update' container.container_id %}" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="{% url 'container_delete' container.container_id %}" class="btn btn-danger btn-sm">Delete</a>
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>

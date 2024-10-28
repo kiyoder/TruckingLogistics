@@ -28,5 +28,14 @@ class ContainerForm(forms.ModelForm):
 
 class ContainerStatusForm(forms.ModelForm):
     class Meta:
-        model = ContainerStatus
-        fields = '__all__'
+        model = Container
+        fields = ['booking', 'size', 'weight', 'contents', 'status', 'delivered_at', 'received_by']
+        widgets = {
+            'booking': forms.Select(attrs={'class': 'form-control'}),
+            'size': forms.TextInput(attrs={'class': 'form-control'}),
+            'weight': forms.TextInput(attrs={'class': 'form-control'}),
+            'contents': forms.Textarea(attrs={'class': 'form-control'}),
+            'status': forms.TextInput(attrs={'class': 'form-control'}),
+            'delivered_at': forms.TextInput(attrs={'class': 'form-control'}),
+            'received_by': forms.TextInput(attrs={'class': 'form-control'}),
+        }

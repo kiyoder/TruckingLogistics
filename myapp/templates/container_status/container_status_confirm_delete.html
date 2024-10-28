@@ -1,7 +1,17 @@
-<h2>Delete Status</h2>
-<p>Are you sure you want to delete this status?</p>
-<form method="POST">
-    {% csrf_token %}
-    <button type="submit">Confirm</button>
-</form>
-<a href="{% url 'container_status_list' %}">Cancel</a>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h2>Delete Status</h2>
+        </div>
+        <div class="card-body">
+            <p>Are you sure you want to delete this status?</p>
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Confirm</button>
+                <a href="{% url 'container_status_list' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
