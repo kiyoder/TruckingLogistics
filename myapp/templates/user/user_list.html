@@ -1,10 +1,163 @@
-<h2>Users</h2>
-<a href="{% url 'user_create' %}">Add User</a>
-<ul>
-    {% for user in users %}
-        <li>{{ user.username }} - {{ user.email }}
-            <a href="{% url 'user_update' user.user_id %}">Edit</a> |
-            <a href="{% url 'user_delete' user.user_id %}">Delete</a>
-        </li>
-    {% endfor %}
-</ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 250px;
+            background-color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+        }
+
+        .sidebar img {
+            width: 100px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 15px;
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .sidebar a.active, .sidebar a:hover {
+            background-color: #e0e7ff;
+            color: #1e3a8a;
+        }
+
+        .sidebar .icon {
+            margin-right: 10px;
+        }
+
+        .sidebar .bottom-links {
+            margin-top: auto;
+            margin-bottom: 20px;
+        }
+
+        /* Main Content */
+        .content {
+            margin-left: 270px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #111827;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #1e3a8a;
+        }
+
+        /* User list styling */
+        .user-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .user-list li {
+            background-color: #f1f5f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-list a {
+            text-decoration: none;
+            color: #007bff;
+            margin-left: 10px;
+        }
+
+        .user-list a:hover {
+            text-decoration: underline;
+        }
+
+        /* Add user button styling */
+        .add-user-button {
+            background-color: #1e3a8a;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .add-user-button:hover {
+            background-color: #1a237e;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="logo.png" alt="Logo">
+        <a href="#"><span class="icon">🏠</span> Dashboard</a>
+        <a href="{% url 'customer_list' %}"><span class="icon">👤</span> Customer Hub</a>
+        <a href="{% url 'booking_list' %}"><span class="icon">📦</span> Booking Hub</a>
+        <a href="{% url 'container_list' %}"><span class="icon">🚛</span> Container Hub</a>
+        <a href="#"><span class="icon">👥</span> Driver</a>
+        <a href="{% url 'user_list' %}" class="active"><span class="icon">👤</span> User Hub</a>
+        <a href="#"><span class="icon">🔒</span> Security</a>
+        <a href="#"><span class="icon">🔔</span> Notification</a>
+        <div class="bottom-links">
+            <a href="#"><span class="icon">⚙️</span> Settings</a>
+            <a href="#"><span class="icon">🚪</span> Logout</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>User Management</h1>
+        <h2>Users</h2>
+        <a href="{% url 'user_create' %}" class="add-user-button">Add User</a>
+        <ul class="user-list">
+            {% for user in users %}
+                <li>
+                    <span>{{ user.username }} - {{ user.email }}</span>
+                    <span>
+                        <a href="{% url 'user_update' user.user_id %}">Edit</a> |
+                        <a href="{% url 'user_delete' user.user_id %}">Delete</a>
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

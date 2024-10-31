@@ -1,12 +1,236 @@
-<h2>Customer List</h2>
-<a href="{% url 'customer_create' %}">Add Customer</a>
-<ul>
-    {% for customer in customers %}
-        <li>{{ customer.name }} - {{ customer.email }}
-            <a href="{% url 'customer_update' customer.customer_id %}">Edit</a> |
-            <a href="{% url 'customer_delete' customer.customer_id %}">Delete</a>
-        </li>
-    {% empty %}
-        <li>No customers available.</li>
-    {% endfor %}
-</ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Management</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    /* Sidebar styling */
+    .sidebar {
+      width: 250px;
+      background-color: #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+    }
+
+    .sidebar img {
+      width: 100px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 15px;
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .sidebar a.active, .sidebar a:hover {
+      background-color: #e0e7ff;
+      color: #1e3a8a;
+    }
+
+    .sidebar .icon {
+      margin-right: 10px;
+    }
+
+    .sidebar .bottom-links {
+      margin-top: auto;
+      margin-bottom: 20px;
+    }
+
+    /* Main Content */
+    .content {
+      margin-left: 270px;
+      width: calc(100% - 270px);
+      padding: 40px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      color: #111827;
+    }
+
+    .add-button {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-size: 16px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .add-button:hover {
+      background-color: #1a237e;
+    }
+
+    /* Table styling */
+    .table-container {
+      background-color: #f1f5f9;
+      border-radius: 8px;
+      overflow-x: auto;
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      color: #333;
+    }
+
+    th {
+      background-color: #f3f4f6;
+      color: #555;
+      font-weight: bold;
+    }
+
+    td.actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .btn-edit, .btn-delete {
+      padding: 5px 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .btn-edit {
+      background-color: #1e90ff;
+    }
+
+    .btn-edit:hover {
+      background-color: #1c7cd6;
+    }
+
+    .btn-delete {
+      background-color: #e53e3e;
+    }
+
+    .btn-delete:hover {
+      background-color: #c53030;
+    }
+
+    /* Pagination styling */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .pagination button {
+      background-color: #e0e7ff;
+      border: none;
+      padding: 8px 16px;
+      margin: 0 4px;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #1e3a8a;
+    }
+
+    .pagination button:hover {
+      background-color: #c3dafb;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <img src="logo.png" alt="Logo">
+    <a href="#"><span class="icon">🏠</span> Dashboard</a>
+    <a href="{% url 'customer_list' %}" class="active"><span class="icon">👤</span> Customer Hub</a>
+    <a href="{% url 'booking_list' %}"><span class="icon">📦</span> Booking Hub</a>
+    <a href="{% url 'container_list' %}"><span class="icon">🚛</span> Container Hub</a>
+    <a href="#"><span class="icon">👥</span> Driver</a>
+    <a href="{% url 'user_list' %}"><span class="icon">👤</span> User Hub</a>
+    <a href="#"><span class="icon">🔒</span> Security</a>
+    <a href="#"><span class="icon">🔔</span> Notification</a>
+    <div class="bottom-links">
+        <a href="#"><span class="icon">⚙️</span> Settings</a>
+        <a href="#"><span class="icon">🚪</span> Logout</a>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="header">
+      <h1>Customer Management</h1>
+      <a href="{% url 'customer_create' %}" class="add-button">Add</a>
+
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Booking Number</th>
+            <th>Name</th>
+            <th>Mobile</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for customer in customers %}
+          <tr>
+            <td>{{ customer.customer_id }}</td>
+            <td>{{ customer.name }}</td>
+            <td>{{ customer.contact_number }}</td>
+            <td>{{ customer.email }}</td>
+            <td>{{ customer.address }}</td>
+            <td class="actions">
+              <a href="{% url 'customer_update' customer.pk %}" class="btn-edit">Edit</a>
+              <a href="{% url 'customer_delete' customer.pk %}" class="btn-delete">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      
+      
+    </div>
+  </div>
+</body>
+</html>
