@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'myapp',
+    'myapp', 'accounts',
 ]
 
 MIDDLEWARE = [
@@ -124,3 +124,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Redirect to homepage after login
+LOGIN_REDIRECT_URL = '/'
+
+# Redirect to login page if a user tries to access a protected view
+LOGIN_URL = '/accounts/login/'
+
+# Redirect after logout
+LOGOUT_REDIRECT_URL = '/'
+
+AUTH_USER_MODEL = 'accounts.User'
