@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 
 # Create your views here.
 
 from django.http import HttpResponse
 
 def home(request):
-    return HttpResponse("Hello, this is my first Django view!")
-
+    return render(request, 'role/role_form.html')
 #ROLE
 from .models import Role
 from .forms import RoleForm
@@ -51,32 +51,42 @@ def customer_list(request):
     customers = Customer.objects.all()
     return render(request, 'customers/customer_list.html', {'customers': customers})
 
+from django.shortcuts import redirect
+
 def customer_create(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CustomerForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('customers/customer_list')
+            return redirect('customer_list')
     else:
         form = CustomerForm()
     return render(request, 'customers/customer_form.html', {'form': form})
 
+
 def customer_update(request, pk):
-    customer = Customer.objects.get(customer_id=pk)
-    if request.method == 'POST':
+    # Fetch the existing customer instance by primary key
+    customer = get_object_or_404(Customer, pk=pk)
+
+    if request.method == "POST":
+        # Bind the form to the existing customer instance
         form = CustomerForm(request.POST, instance=customer)
         if form.is_valid():
-            form.save()
-            return redirect('customers/customer_list')
+            form.save()  # Updates the existing customer
+            return redirect('customer_list')  # Redirect to the customer list after saving
     else:
+        # Initialize the form with the existing data for editing
         form = CustomerForm(instance=customer)
+    
     return render(request, 'customers/customer_form.html', {'form': form})
 
 def customer_delete(request, pk):
-    customer = Customer.objects.get(customer_id=pk)
+    customer = get_object_or_404(Customer, customer_id=pk)
+
     if request.method == 'POST':
         customer.delete()
-        return redirect('customers/customer_list')
+        return redirect('customer_list')
+    
     return render(request, 'customers/customer_confirm_delete.html', {'customer': customer})
 
 #USER
@@ -92,7 +102,7 @@ def user_create(request):
         form = UserForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('user/user_list')
+            return redirect('user_list')
     else:
         form = UserForm()
     return render(request, 'user/user_form.html', {'form': form})
@@ -109,10 +119,10 @@ def user_update(request, pk):
     return render(request, 'user/user_form.html', {'form': form})
 
 def user_delete(request, pk):
-    user = User.objects.get(user_id=pk)
+    user = get_object_or_404(User, user_id=pk)
     if request.method == 'POST':
         user.delete()
-        return redirect('user/user_list')
+        return redirect('user_list')
     return render(request, 'user/user_confirm_delete.html', {'user': user})
 
 #BOOKINGS
