@@ -129,7 +129,7 @@ def booking_create(request):
         form = BookingForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('booking/booking_list')
+            return redirect('booking_list')
     else:
         form = BookingForm()
     return render(request, 'booking/booking_form.html', {'form': form})
@@ -140,7 +140,7 @@ def booking_update(request, pk):
         form = BookingForm(request.POST, instance=booking)
         if form.is_valid():
             form.save()
-            return redirect('booking/booking_list')
+            return redirect('booking_list')
     else:
         form = BookingForm(instance=booking)
     return render(request, 'booking/booking_form.html', {'form': form})
@@ -149,7 +149,7 @@ def booking_delete(request, pk):
     booking = Booking.objects.get(booking_id=pk)
     if request.method == 'POST':
         booking.delete()
-        return redirect('booking/booking_list')
+        return redirect('booking_list')
     return render(request, 'booking/booking_confirm_delete.html', {'booking': booking})
 
 
