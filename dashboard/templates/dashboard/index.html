@@ -1,0 +1,10 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="welcome-message">
+        <h1>Welcome, {{ user.username }}</h1>
+        <p>Select a hub from the sidebar to get started.</p>
+    </div>
+{% endblock %}

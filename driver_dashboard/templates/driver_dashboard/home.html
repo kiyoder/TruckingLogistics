@@ -1,0 +1,13 @@
+<!-- driver_dashboard/home.html -->
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block title %}Driver Dashboard{% endblock %}
+
+{% block dashboard_content %}
+    <h1>Welcome, {{ user.username }}!</h1>
+    <p>This is the driver dashboard.</p>
+    <ul>
+        <li><a href="#">View Assigned Deliveries</a></li>
+        <li><a href="#">Update Delivery Status</a></li>
+    </ul>
+{% endblock %}

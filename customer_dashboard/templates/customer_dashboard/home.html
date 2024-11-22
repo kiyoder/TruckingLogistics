@@ -1,0 +1,13 @@
+<!-- customer_dashboard/home.html -->
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block title %}Customer Dashboard{% endblock %}
+
+{% block dashboard_content %}
+    <h1>Welcome, {{ user.username }}!</h1>
+    <p>This is the customer dashboard.</p>
+    <ul>
+        <li><a href="#">View Orders</a></li>
+        <li><a href="#">Update Profile</a></li>
+    </ul>
+{% endblock %}

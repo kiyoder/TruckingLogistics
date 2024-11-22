@@ -1,0 +1,203 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Customer Management{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Customer Management</h1>
+        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal">Add Customer</a>
+    </div>
+
+    <!-- Customer Table -->
+    <table class="table table-striped table-hover">
+        <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Contact Number</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Company Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for customer in customers %}
+            <tr>
+                <td>{{ customer.customer_id }}</td>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.contact_number }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.address }}</td>
+                <td>{{ customer.company_name|default:"N/A" }}</td>
+                <td>
+                    <!-- Edit Button -->
+                    <button type="button" class="btn btn-sm btn-primary edit-btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editCustomerModal"
+                            data-id="{{ customer.customer_id }}"
+                            data-name="{{ customer.name }}"
+                            data-contact="{{ customer.contact_number }}"
+                            data-email="{{ customer.email }}"
+                            data-address="{{ customer.address }}"
+                            data-company="{{ customer.company_name }}">
+                        Edit
+                    </button>
+                    <!-- Delete Button -->
+                    <button type="button" class="btn btn-sm btn-danger delete-btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteCustomerModal"
+                            data-id="{{ customer.customer_id }}"
+                            data-name="{{ customer.name }}">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">No customers found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Edit Customer Modal -->
+    <div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCustomerModalLabel">Edit Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="editCustomerForm" method="post" action="{% url 'customers:edit' %}" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" id="customer_id" name="customer_id">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required minlength="3" maxlength="100"
+                                   pattern="[A-Za-z\s]+" title="Name should contain only letters and spaces.">
+                        </div>
+                        <div class="mb-3">
+                            <label for="contact_number" class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" id="contact_number" name="contact_number" required
+                                   pattern="\d{10,15}" title="Contact number should be 10-15 digits.">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="3" required minlength="10"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="company_name" class="form-label">Company Name</label>
+                            <input type="text" class="form-control" id="company_name" name="company_name" maxlength="100">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteCustomerModal" tabindex="-1" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCustomerModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="deleteCustomerForm" method="post" action="">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        Are you sure you want to delete <strong id="deleteCustomerName"></strong>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editButtons = document.querySelectorAll('.edit-btn');
+            const editForm = document.getElementById('editCustomerForm');
+
+            editButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    console.log('Edit button clicked');
+                    console.log('Customer ID:', button.getAttribute('data-id'));
+                    console.log('Customer Name:', button.getAttribute('data-name'));
+                    console.log('Customer Contact:', button.getAttribute('data-contact'));
+                    console.log('Customer Email:', button.getAttribute('data-email'));
+                    console.log('Customer Address:', button.getAttribute('data-address'));
+                    console.log('Customer Company:', button.getAttribute('data-company'));
+
+                    // Populate modal fields
+                    document.getElementById('customer_id').value = button.getAttribute('data-id');
+                    document.getElementById('name').value = button.getAttribute('data-name');
+                    document.getElementById('contact_number').value = button.getAttribute('data-contact');
+                    document.getElementById('email').value = button.getAttribute('data-email');
+                    document.getElementById('address').value = button.getAttribute('data-address');
+                    document.getElementById('company_name').value = button.getAttribute('data-company');
+                });
+            });
+
+            editForm.addEventListener('submit', function (e) {
+                // Prevent form submission if there are invalid inputs
+                if (!editForm.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    editForm.classList.add('was-validated');
+                }
+            });
+
+            // Add real-time validation feedback
+            editForm.querySelectorAll('input, textarea').forEach(field => {
+                field.addEventListener('input', () => {
+                    if (field.checkValidity()) {
+                        field.classList.remove('is-invalid');
+                        field.classList.add('is-valid');
+                    } else {
+                        field.classList.remove('is-valid');
+                        field.classList.add('is-invalid');
+                    }
+                });
+            });
+
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            const deleteForm = document.getElementById('deleteCustomerForm');
+            const deleteCustomerName = document.getElementById('deleteCustomerName');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const customerId = button.getAttribute('data-id');
+                    const customerName = button.getAttribute('data-name');
+
+                    // Update modal content
+                    deleteCustomerName.textContent = customerName;
+
+                    // Update form action
+                    deleteForm.action = `/customers/delete/${customerId}/`;
+                });
+            });
+
+
+        });
+    </script>
+{% endblock %}
+
+
+
+

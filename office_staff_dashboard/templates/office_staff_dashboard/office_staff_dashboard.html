@@ -1,0 +1,13 @@
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block title %}Office Staff Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Welcome, {{ user.username }}</h1>
+    <p>As an office staff member, you can view all dashboards:</p>
+    <ul>
+        <li><a href="{% url 'customer_dashboard:home' %}">Customer Dashboard</a></li>
+        <li><a href="{% url 'driver_dashboard:home' %}">Driver Dashboard</a></li>
+        <li><a href="{% url 'dashboard:role_based_dashboard' %}">Your Dashboard</a></li>
+    </ul>
+{% endblock %}

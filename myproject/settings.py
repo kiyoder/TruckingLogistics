@@ -37,7 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'myapp', 'accounts',
+    'myapp',
+    'accounts',
+    'django_bootstrap5',
+    'dashboard',
+    'customer_dashboard',
+    'office_staff_dashboard',
+    'driver_dashboard',
+    'customers',
 ]
 
 MIDDLEWARE = [
@@ -52,10 +59,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'myproject.urls'
 
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,4 +145,6 @@ LOGIN_URL = '/accounts/login/'
 # Redirect after logout
 LOGOUT_REDIRECT_URL = '/'
 
-AUTH_USER_MODEL = 'accounts.User'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]

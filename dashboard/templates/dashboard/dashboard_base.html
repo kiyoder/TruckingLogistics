@@ -1,0 +1,18 @@
+<!-- dashboard_base.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="{% url 'dashboard:role_based_dashboard' %}">Dashboard Home</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <section class="main-content">
+            {% block dashboard_content %}{% endblock %}
+        </section>
+    </div>
+{% endblock %}

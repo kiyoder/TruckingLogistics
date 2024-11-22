@@ -1,0 +1,14 @@
+<!-- office_staff_dashboard/home.html -->
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block title %}Office Staff Dashboard{% endblock %}
+
+{% block dashboard_content %}
+    <h1>Welcome, {{ user.username }}!</h1>
+    <p>This is the office staff dashboard.</p>
+    <ul>
+        <li><a href="#">Manage Orders</a></li>
+        <li><a href="#">Assign Drivers</a></li>
+        <li><a href="{% url 'office_staff_dashboard:office_staff_dashboard' %}"> View Other Dashboards</a></li>
+    </ul>
+{% endblock %}

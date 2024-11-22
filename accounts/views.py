@@ -1,24 +1,18 @@
+# accounts/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
+from django.contrib import messages
+
+from .forms import SignUpForm
+
 
 def signup_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)  # Log in the user after signup
-            return redirect('home')  # Redirect to homepage
+            form.save()
+            return redirect('login')  # Redirect to the login page after signup
     else:
-        form = UserCreationForm()
+        form = SignUpForm()
     return render(request, 'accounts/signup.html', {'form': form})
 
-from django.contrib.auth.views import LoginView
-
-class CustomLoginView(LoginView):
-    template_name = 'accounts/login.html'
-
-from django.contrib.auth.views import LogoutView
-
-class CustomLogoutView(LogoutView):
-    template_name = 'accounts/logout.html'

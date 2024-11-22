@@ -7,10 +7,10 @@ urlpatterns = [
     path('', views.home, name='home'),
 
     # Customer URLs
-    path('customers/', views.customer_list, name='customer_list'),
-    path('customers/create/', views.customer_create, name='customer_create'),
-    path('customers/update/<int:pk>/', views.customer_update, name='customer_update'),
-    path('customers/delete/<int:pk>/', views.customer_delete, name='customer_delete'),
+    # path('customers/', views.customer_list, name='customer_list'),
+    # path('customers/create/', views.customer_create, name='customer_create'),
+    # path('customers/update/<int:pk>/', views.customer_update, name='customer_update'),
+    # path('customers/delete/<int:pk>/', views.customer_delete, name='customer_delete'),
 
     # User URLs
     path('users/', views.user_list, name='user_list'),
