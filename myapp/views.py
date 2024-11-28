@@ -128,34 +128,53 @@ def user_delete(request, pk):
 
 #BOOKINGS
 
-from .models import Booking
-from .forms import BookingForm
+
 
 def booking_list(request):
     bookings = Booking.objects.all()
     return render(request, 'booking/booking_list.html', {'bookings': bookings})
 
+from django.shortcuts import render, redirect
+from .models import Booking
+from .forms import BookingForm
+from datetime import datetime
+
 def booking_create(request):
     if request.method == 'POST':
         form = BookingForm(request.POST)
         if form.is_valid():
-            form.save()
+            booking = form.save(commit=False)
+            # Automatically set booking_number and created_by
+            booking_number = form.cleaned_data['booking_number']
+            booking.booking_number = booking_number
+            booking.created_by = request.user
+            booking.save()
             return redirect('booking_list')
     else:
-        form = BookingForm()
+        # Generate the booking number
+        current_year = datetime.now().year
+        last_booking = Booking.objects.filter(booking_number__startswith=str(current_year)).order_by('id').last()
+        if last_booking:
+            last_number = int(last_booking.booking_number.split('-')[1])
+            new_number = f"{current_year}-{last_number + 1:05d}"
+        else:
+            new_number = f"{current_year}-00001"
+
+        form = BookingForm(initial={'booking_number': new_number})
+
     return render(request, 'booking/booking_form.html', {'form': form})
 
 def booking_update(request, pk):
-    booking = Booking.objects.get(booking_id=pk)
+    booking = Booking.objects.get(pk=pk)
     if request.method == 'POST':
         form = BookingForm(request.POST, instance=booking)
         if form.is_valid():
             form.save()
             return redirect('booking_list')
     else:
+        # Pass the booking instance to the form
         form = BookingForm(instance=booking)
     return render(request, 'booking/booking_form.html', {'form': form})
-
 def booking_delete(request, pk):
     booking = Booking.objects.get(booking_id=pk)
     if request.method == 'POST':

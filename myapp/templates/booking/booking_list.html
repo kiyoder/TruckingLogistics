@@ -177,8 +177,12 @@
               <strong>{{ booking.booking_number }}</strong>: {{ booking.origin }} to {{ booking.destination }}
             </span>
             <span>
-              <a href="{% url 'booking_update' booking.booking_id %}" class="btn btn-primary btn-sm">Edit</a>
-              <a href="{% url 'booking_delete' booking.booking_id %}" class="btn btn-danger btn-sm">Delete</a>
+{#              <a href="{% url 'booking_update' booking.booking_id %}" class="btn btn-primary btn-sm">Edit</a>#}
+{#              <a href="{% url 'booking_delete' booking.booking_id %}" class="btn btn-danger btn-sm">Delete</a>#}
+{#                #}
+                <a href="{% url 'booking_update' booking.pk %}" class="btn btn-primary btn-sm">Edit</a>
+                <a href="{% url 'booking_delete' booking.pk %}" class="btn btn-danger btn-sm">Delete</a>
+
             </span>
           </li>
         {% endfor %}

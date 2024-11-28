@@ -44,19 +44,31 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
-    
+
+from datetime import datetime
+from django.conf import settings
+
+
 class Booking(models.Model):
-    booking_id = models.AutoField(primary_key=True)
-    booking_number = models.CharField(max_length=50, unique=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    booking_number = models.CharField(max_length=15, unique=True, editable=False)
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE)
     origin = models.CharField(max_length=255)
     destination = models.CharField(max_length=255)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='created_bookings')
     status = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.booking_number
+    def save(self, *args, **kwargs):
+        if not self.booking_number:  # Only generate if not already set
+            current_year = datetime.now().year
+            last_booking = Booking.objects.filter(
+                booking_number__startswith=f"{current_year}-"
+            ).order_by('id').last()
+            if last_booking:
+                last_number = int(last_booking.booking_number.split('-')[1])
+                self.booking_number = f"{current_year}-{last_number + 1:05d}"
+            else:
+                self.booking_number = f"{current_year}-00001"
+        super().save(*args, **kwargs)
     
 class Container(models.Model):
     container_id = models.AutoField(primary_key=True)

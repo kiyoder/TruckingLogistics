@@ -17,10 +17,38 @@ class UserForm(forms.ModelForm):
         model = User
         fields = '__all__'
 
+
+from django import forms
+from .models import Booking
+
+# class BookingForm(forms.ModelForm):
+#     class Meta:
+#         model = Booking
+#         fields = ['customer', 'origin', 'destination', 'status']  # Exclude 'booking_number'
+#
+#     def __init__(self, *args, **kwargs):
+#         super(BookingForm, self).__init__(*args, **kwargs)
+#         # Add a custom read-only booking_number field if the instance exists
+#         if self.instance and self.instance.pk:
+#             self.fields['booking_number_display'] = forms.CharField(
+#                 initial=self.instance.booking_number,
+#                 label="Booking Number",
+#                 required=False,
+#                 widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'})
+#             )
+
 class BookingForm(forms.ModelForm):
+    booking_number = forms.CharField(disabled=True, required=False, label="Booking Number")
+
     class Meta:
         model = Booking
-        fields = '__all__'
+        fields = ['customer', 'origin', 'destination', 'status']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'initial' in kwargs and 'booking_number' in kwargs['initial']:
+            self.fields['booking_number'].initial = kwargs['initial']['booking_number']
+
 
 class ContainerForm(forms.ModelForm):
     class Meta:
