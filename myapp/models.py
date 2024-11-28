@@ -35,7 +35,7 @@ class User(models.Model):
     
 class Booking(models.Model):
     booking_id = models.AutoField(primary_key=True)
-    booking_number = models.CharField(max_length=50)
+    booking_number = models.CharField(max_length=50, unique=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     origin = models.CharField(max_length=255)
     destination = models.CharField(max_length=255)
@@ -72,7 +72,25 @@ class ContainerStatus(models.Model):
     def __str__(self):
         return f"Status {self.status_id} for Container {self.container}"
 
+class Driver(models.Model):
+    driver_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, default='Unknown')
     
+    # Foreign Keys to other models
+    booking = models.ForeignKey('Booking', on_delete=models.SET_NULL, null=True, blank=True)
+    customer = models.ForeignKey('Customer', on_delete=models.SET_NULL, null=True, blank=True)
+    container = models.ForeignKey('Container', on_delete=models.SET_NULL, null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
+    def get_booking_number(self):
+        return self.booking.booking_number if self.booking else 'N/A'
+
+    def get_customer_name(self):
+        return self.customer.name if self.customer else 'N/A'
+
+    def get_container_contents(self):
+        return self.container.contents if self.container else 'N/A'
 
 

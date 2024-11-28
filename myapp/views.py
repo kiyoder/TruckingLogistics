@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 # Create your views here.
 
 from django.http import HttpResponse
+from django.urls import reverse
 
 def home(request):
     return render(request, 'role/role_form.html')
@@ -113,7 +114,7 @@ def user_update(request, pk):
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('user/user_list')
+            return redirect('user_list')
     else:
         form = UserForm(instance=user)
     return render(request, 'user/user_form.html', {'form': form})
@@ -139,7 +140,7 @@ def booking_create(request):
         form = BookingForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('booking/booking_list')
+            return redirect('booking_list')
     else:
         form = BookingForm()
     return render(request, 'booking/booking_form.html', {'form': form})
@@ -150,7 +151,7 @@ def booking_update(request, pk):
         form = BookingForm(request.POST, instance=booking)
         if form.is_valid():
             form.save()
-            return redirect('booking/booking_list')
+            return redirect('booking_list')
     else:
         form = BookingForm(instance=booking)
     return render(request, 'booking/booking_form.html', {'form': form})
@@ -159,8 +160,9 @@ def booking_delete(request, pk):
     booking = Booking.objects.get(booking_id=pk)
     if request.method == 'POST':
         booking.delete()
-        return redirect('booking/booking_list')
+        return redirect('booking_list')
     return render(request, 'booking/booking_confirm_delete.html', {'booking': booking})
+
 
 
 #CONTAINER
@@ -176,7 +178,7 @@ def container_create(request):
         form = ContainerForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('container/container_list')
+            return redirect('container_list')
     else:
         form = ContainerForm()
     return render(request, 'container/container_form.html', {'form': form})
@@ -187,7 +189,7 @@ def container_update(request, pk):
         form = ContainerForm(request.POST, instance=container)
         if form.is_valid():
             form.save()
-            return redirect('container/container_list')
+            return redirect('container_list')
     else:
         form = ContainerForm(instance=container)
     return render(request, 'container/container_form.html', {'form': form})
@@ -196,7 +198,7 @@ def container_delete(request, pk):
     container = Container.objects.get(container_id=pk)
     if request.method == 'POST':
         container.delete()
-        return redirect('container/container_list')
+        return redirect('container_list')
     return render(request, 'container/container_confirm_delete.html', {'container': container})
 
 #CONTAINER STATUS
@@ -235,3 +237,65 @@ def container_status_delete(request, pk):
         return redirect('container_status/container_status_list')
     return render(request, 'container_status/container_status_confirm_delete.html', {'status': status})
 
+from .models import Driver
+from .forms import DriverForm
+
+def driver_create(request):
+    # Fetching the data to populate select fields
+    bookings = Booking.objects.all()
+    customers = Customer.objects.all()
+    containers = Container.objects.all()
+    
+    if request.method == 'POST':
+        form = DriverForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the new driver to the database
+            return redirect('/drivers/')  # Redirect directly to the list of drivers
+    else:
+        form = DriverForm()
+
+    context = {
+        'form': form,
+        'bookings': bookings,
+        'customers': customers,
+        'containers': containers,
+    }
+
+    return render(request, 'driver/driver_form.html', context)
+
+def driver_list(request):
+    drivers = Driver.objects.all()
+    return render(request, 'driver/driver_list.html', {'drivers': drivers})
+def driver_update(request, pk):
+    driver = get_object_or_404(Driver, pk=pk)
+    if request.method == 'POST':
+        form = DriverForm(request.POST, instance=driver)
+        if form.is_valid():
+            form.save()
+            return redirect('driver_list')
+    else:
+        form = DriverForm(instance=driver)
+    return render(request, 'driver/driver_form.html', {'form': form, 'driver': driver})
+
+def driver_delete(request, pk):
+    driver = get_object_or_404(Driver, pk=pk)
+    if request.method == 'POST':
+        driver.delete()
+        return redirect('driver_list')  # Redirect to the driver list after deletion
+    return render(request, 'driver/driver_confirm_delete.html', {'driver': driver})
+
+def driver_form(request, pk=None):
+    if pk:
+        driver = get_object_or_404(Driver, pk=pk)
+    else:
+        driver = None
+    
+    if request.method == 'POST':
+        form = DriverForm(request.POST, instance=driver)
+        if form.is_valid():
+            form.save()
+            return redirect('driver_list')  # Redirect to the driver list after saving
+    else:
+        form = DriverForm(instance=driver)
+    
+    return render(request, 'driver/driver_form.html', {'form': form})

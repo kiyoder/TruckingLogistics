@@ -1,55 +1,203 @@
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Form</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
 
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-header">
-            <h2>Booking Form</h2>
-        </div>
-        <div class="card-body">
-            <form method="POST" class="form-horizontal">
-                {% csrf_token %}
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Booking Number</label>
-                    <div class="col-sm-10">
-                        {{ form.booking_number }}
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Customer</label>
-                    <div class="col-sm-10">
-                        {{ form.customer }}
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Origin</label>
-                    <div class="col-sm-10">
-                        {{ form.origin }}
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Destination</label>
-                    <div class="col-sm-10">
-                        {{ form.destination }}
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Created by</label>
-                    <div class="col-sm-10">
-                        {{ form.created_by }}
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Status</label>
-                    <div class="col-sm-10">
-                        {{ form.status }}
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    /* Sidebar styling */
+    .sidebar {
+      width: 250px;
+      background-color: #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+    }
+
+    .sidebar img {
+      width: 100px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 15px;
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .sidebar a.active, .sidebar a:hover {
+      background-color: #e0e7ff;
+      color: #1e3a8a;
+    }
+
+    .sidebar .icon {
+      margin-right: 10px;
+    }
+
+    .sidebar .bottom-links {
+      margin-top: auto;
+      margin-bottom: 20px;
+    }
+
+    /* Main Content */
+    .content {
+      margin-left: 270px;
+      width: calc(100% - 270px);
+      padding: 40px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .header h2 {
+      font-size: 24px;
+      color: #1e3a8a;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .btn-success {
+      background-color: #1a237e;
+    }
+
+    .btn-success:hover {
+      background-color: #1a237e;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #1e3a8a;
+    }
+    
+    .form-group button {
+      background-color: #007bff;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .form-group button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="{% static 'images/logo.png' %}" alt="Logo">
+    <a href="#"><span class="icon">🏠</span> Dashboard</a>
+    <a href="{% url 'customer_list' %}"><span class="icon">👤</span> Customer Hub</a>
+    <a href="{% url 'booking_list' %}" class="active"><span class="icon">📦</span> Booking Hub</a>
+    <a href="{% url 'container_list' %}"><span class="icon">🚛</span> Container Hub</a>
+    <a href="{% url 'driver_list' %}"><span class="icon">👥</span> Driver</a>
+    <a href="{% url 'user_list' %}"><span class="icon">👤</span> User Hub</a>
+    <a href="#"><span class="icon">🔒</span> Security</a>
+    <a href="#"><span class="icon">🔔</span> Notification</a>
+    <div class="bottom-links">
+      <a href="#"><span class="icon">⚙️</span> Settings</a>
+      <a href="#"><span class="icon">🚪</span> Logout</a>
     </div>
-</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <div class="header">
+      <h2>Booking Form</h2>
+      <a href="{% url 'booking_list' %}" class="btn btn-success">Back to Booking Hub</a>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <form method="POST" class="form-horizontal">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="id_booking_number">Booking Number</label>
+            {{ form.booking_number }}
+          </div>
+          <div class="form-group">
+            <label for="id_customer">Customer</label>
+            {{ form.customer }}
+          </div>
+          <div class="form-group">
+            <label for="id_origin">Origin</label>
+            {{ form.origin }}
+          </div>
+          <div class="form-group">
+            <label for="id_destination">Destination</label>
+            {{ form.destination }}
+          </div>
+          <div class="form-group">
+            <label for="id_created_by">Created by</label>
+            {{ form.created_by }}
+          </div>
+          <div class="form-group">
+            <label for="id_status">Status</label>
+            {{ form.status }}
+          </div>
+          <div class="form-group">
+            <button type="submit">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

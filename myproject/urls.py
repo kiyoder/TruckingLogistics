@@ -58,6 +58,13 @@ urlpatterns = [
     path('roles/create/', views.role_create, name='role_create'),
     path('roles/update/<int:pk>/', views.role_update, name='role_update'),
     path('roles/delete/<int:pk>/', views.role_delete, name='role_delete'),
+
+    path('drivers/', views.driver_list, name='driver_list'),  # List of drivers
+    path('drivers/create/', views.driver_create, name='driver_create'),  # Create a new driver
+    path('drivers/update/<int:pk>/', views.driver_update, name='driver_update'),  # Update an existing driver
+    path('drivers/delete/<int:pk>/', views.driver_delete, name='driver_delete'),  # Delete a driver
+    path('drivers/form/<int:pk>/', views.driver_form, name='driver_form'),  # Form for creating or updating a driver
+
 ]
 
 # urlpatterns = [

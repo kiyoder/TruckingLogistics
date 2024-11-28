@@ -1,17 +1,217 @@
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Form</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
 
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-header">
-            <h2>Delete Booking</h2>
-        </div>
-        <div class="card-body">
-            <p>Are you sure you want to delete "{{ booking.booking_number }}"?</p>
-            <form method="POST">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Confirm</button>
-                <a href="{% url 'booking_list' %}" class="btn btn-secondary">Cancel</a>
-            </form>
-        </div>
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    /* Sidebar styling */
+    .sidebar {
+      width: 250px;
+      background-color: #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+    }
+
+    .sidebar img {
+      width: 100px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 15px;
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .sidebar a.active, .sidebar a:hover {
+      background-color: #e0e7ff;
+      color: #1e3a8a;
+    }
+
+    .sidebar .icon {
+      margin-right: 10px;
+    }
+
+    .sidebar .bottom-links {
+      margin-top: auto;
+      margin-bottom: 20px;
+    }
+
+    /* Main Content */
+    .content {
+      margin-left: 270px;
+      width: calc(100% - 270px);
+      padding: 40px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .header h2 {
+      font-size: 24px;
+      color: #1e3a8a;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .btn-success {
+      background-color: #28a745;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #1e3a8a;
+    }
+
+    .form-group button {
+      background-color: #007bff;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .form-group button:hover {
+      background-color: #0056b3;
+    }
+
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1e3a8a;
+    }
+
+    .card-body {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #555;
+    }
+
+    .card-body a {
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="{% static 'images/logo.png' %}" alt="Logo">
+    <a href="#"><span class="icon">🏠</span> Dashboard</a>
+    <a href="{% url 'customer_list' %}"><span class="icon">👤</span> Customer Hub</a>
+    <a href="{% url 'booking_list' %}" class="active"><span class="icon">📦</span> Booking Hub</a>
+    <a href="{% url 'container_list' %}"><span class="icon">🚛</span> Container Hub</a>
+    <a href="{% url 'driver_list' %}"><span class="icon">👥</span> Driver</a>
+    <a href="{% url 'user_list' %}"><span class="icon">👤</span> User Hub</a>
+    <a href="#"><span class="icon">🔒</span> Security</a>
+    <a href="#"><span class="icon">🔔</span> Notification</a>
+    <div class="bottom-links">
+      <a href="#"><span class="icon">⚙️</span> Settings</a>
+      <a href="#"><span class="icon">🚪</span> Logout</a>
     </div>
-</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <div class="card">
+      <div class="card-header">
+        <h2>Delete Booking</h2>
+      </div>
+      <div class="card-body">
+        <p>Are you sure you want to delete "{{ booking.booking_number }}"?</p>
+        <form method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Confirm</button>
+          <a href="{% url 'booking_list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

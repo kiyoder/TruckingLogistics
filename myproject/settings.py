@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',
-    'bootstrap5',
+    'django_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +56,9 @@ ROOT_URLCONF = 'myproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',  # This ensures the templates directory is recognized
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,6 +70,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'myproject.wsgi.application'
 

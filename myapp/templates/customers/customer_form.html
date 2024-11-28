@@ -16,101 +16,153 @@
 
     body {
       display: flex;
-      justify-content: center;
-      align-items: center;
       min-height: 100vh;
-      background-color: #f8f9fa;
+      background-color: #f7fafc;
+      flex-direction: column;
     }
 
     /* Sidebar styling */
     .sidebar {
-      width: 250px;
-      background-color: #f3f4f6;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 20px;
-      height: 100vh;
-      position: fixed;
-      left: 0;
-    }
+            width: 250px;
+            background-color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+        }
 
-    .sidebar img {
-      width: 100px;
-      margin-bottom: 20px;
-      border-radius: 50%;
-    }
+        .sidebar img {
+            width: 100px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+        }
 
-    .sidebar a {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      padding: 15px;
-      text-decoration: none;
-      color: #333;
-      font-size: 16px;
-      font-weight: 500;
-    }
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 15px;
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+        }
 
-    .sidebar a.active, .sidebar a:hover {
-      background-color: #e0e7ff;
-      color: #1e3a8a;
-    }
+        .sidebar a.active, .sidebar a:hover {
+            background-color: #e0e7ff;
+            color: #1e3a8a;
+        }
 
-    .sidebar .icon {
-      margin-right: 10px;
-    }
+        .sidebar .icon {
+            margin-right: 10px;
+        }
 
-    .sidebar .bottom-links {
-      margin-top: auto;
-      margin-bottom: 20px;
-    }
+        .sidebar .bottom-links {
+            margin-top: auto;
+            margin-bottom: 20px;
+        }
 
     /* Main Content */
     .content {
       margin-left: 270px;
       width: 100%;
+      padding: 40px 20px;
+      flex: 1;
       display: flex;
       justify-content: center;
-      padding: 40px;
+      align-items: center;
     }
 
     .form-container {
       text-align: center;
-      max-width: 400px;
+      max-width: 500px;
       width: 100%;
-      background-color: #f1f5f9;
+      background-color: #ffffff;
       padding: 30px;
       border-radius: 8px;
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     h1 {
-      font-size: 24px;
+      font-size: 28px;
       margin-bottom: 20px;
       color: #111827;
+      font-weight: bold;
     }
 
     h2 {
-      font-size: 20px;
+      font-size: 22px;
       margin-bottom: 20px;
-      color: #1e3a8a;
+      color: #4c51bf;
+      font-weight: 600;
+    }
+
+    .form-container form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-container input, .form-container select, .form-container textarea {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-container input:focus, .form-container select:focus, .form-container textarea:focus {
+      border-color: #4c51bf;
+      outline: none;
     }
 
     button {
-      background-color: #1e3a8a;
-      color: #ffffff;
+      background-color: #4c51bf;
+      color: white;
       font-size: 16px;
-      padding: 10px;
-      width: 100%;
-      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
       border: none;
-      border-radius: 4px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #1a237e;
+      background-color: #3b4db2;
+    }
+
+    .form-container a {
+      text-decoration: none;
+      color: #4c51bf;
+      font-size: 14px;
+      margin-top: 20px;
+      display: inline-block;
+      transition: color 0.3s ease;
+    }
+
+    .form-container a:hover {
+      color: #2c3e8c;
+    }
+    
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 200px;
+      }
+
+      .content {
+        margin-left: 220px;
+      }
+
+      .form-container {
+        max-width: 400px;
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -118,10 +170,10 @@
   <div class="sidebar">
     <img src="{% static 'images/logo.png' %}" alt="Logo">
     <a href="#"><span class="icon">🏠</span> Dashboard</a>
-    <a href="{% url 'customer_list' %}" class ="active"><span class="icon">👤</span> Customer Hub</a>
+    <a href="{% url 'customer_list' %}" class="active"><span class="icon">👤</span> Customer Hub</a>
     <a href="{% url 'booking_list' %}"><span class="icon">📦</span> Booking Hub</a>
     <a href="{% url 'container_list' %}"><span class="icon">🚛</span> Container Hub</a>
-    <a href="#"><span class="icon">👥</span> Driver</a>
+    <a href="{% url 'driver_list' %}"><span class="icon">👥</span> Driver</a>
     <a href="{% url 'user_list' %}"><span class="icon">👤</span> User Hub</a>
     <a href="#"><span class="icon">🔒</span> Security</a>
     <a href="#"><span class="icon">🔔</span> Notification</a>

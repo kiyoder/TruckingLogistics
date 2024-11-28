@@ -1,5 +1,5 @@
 from django import forms
-from .models import Customer, Role, User, Booking, Container, ContainerStatus
+from .models import Customer, Role, User, Booking, Container, ContainerStatus, Driver
 
 class CustomerForm(forms.ModelForm):
     class Meta:
@@ -39,3 +39,15 @@ class ContainerStatusForm(forms.ModelForm):
             'delivered_at': forms.TextInput(attrs={'class': 'form-control'}),
             'received_by': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+class DriverForm(forms.ModelForm):
+    class Meta:
+        model = Driver
+        fields = ['name', 'booking', 'customer', 'container']  # Include the necessary fields
+
+    # If needed, you can add custom widgets or validation for the ForeignKey fields
+    booking = forms.ModelChoiceField(queryset=Booking.objects.all(), required=True)
+    customer = forms.ModelChoiceField(queryset=Customer.objects.all(), required=True)
+    container = forms.ModelChoiceField(queryset=Container.objects.all(), required=True)
+
+    # If you want to customize the form further, you can add widgets or validation rules

@@ -1,23 +1,193 @@
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Management</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
 
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-header">
-            <h2>Bookings</h2>
-        </div>
-        <div class="card-body">
-            <a href="{% url 'booking_create' %}" class="btn btn-success mb-3">Add Booking</a>
-            <ul class="list-group">
-                {% for booking in bookings %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>{{ booking.booking_number }} - {{ booking.origin }} to {{ booking.destination }}</span>
-                        <span>
-                            <a href="{% url 'booking_update' booking.booking_id %}" class="btn btn-primary btn-sm">Edit</a>
-                            <a href="{% url 'booking_delete' booking.booking_id %}" class="btn btn-danger btn-sm">Delete</a>
-                        </span>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    /* Sidebar styling */
+    .sidebar {
+      width: 250px;
+      background-color: #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+    }
+
+    .sidebar img {
+      width: 100px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 15px;
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .sidebar a.active, .sidebar a:hover {
+      background-color: #e0e7ff;
+      color: #1e3a8a;
+    }
+
+    .sidebar .icon {
+      margin-right: 10px;
+    }
+
+    .sidebar .bottom-links {
+      margin-top: auto;
+      margin-bottom: 20px;
+    }
+
+    /* Main Content */
+    .content {
+      margin-left: 270px;
+      width: calc(100% - 270px);
+      padding: 40px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .header h2 {
+      font-size: 24px;
+      color: #111827;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .btn-success {
+      background-color: #1a237e;
+    }
+
+    .btn-success:hover {
+      background-color: #1a237e;
+    }
+
+    .list-group {
+      list-style: none;
+      padding: 0;
+      margin-top: 10px;
+    }
+
+    .list-group-item {
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+      margin-left: 5px;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      border: none;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="{% static 'images/logo.png' %}" alt="Logo">
+    <a href="#"><span class="icon">🏠</span> Dashboard</a>
+    <a href="{% url 'customer_list' %}"><span class="icon">👤</span> Customer Hub</a>
+    <a href="{% url 'booking_list' %}" class="active"><span class="icon">📦</span> Booking Hub</a>
+    <a href="{% url 'container_list' %}"><span class="icon">🚛</span> Container Hub</a>
+    <a href="{% url 'driver_list' %}"><span class="icon">👥</span> Driver</a>
+    <a href="{% url 'user_list' %}"><span class="icon">👤</span> User Hub</a>
+    <a href="#"><span class="icon">🔒</span> Security</a>
+    <a href="#"><span class="icon">🔔</span> Notification</a>
+    <div class="bottom-links">
+      <a href="#"><span class="icon">⚙️</span> Settings</a>
+      <a href="#"><span class="icon">🚪</span> Logout</a>
     </div>
-</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <div class="header">
+      <h2>Bookings</h2>
+      <a href="{% url 'booking_create' %}" class="btn btn-success">Add Booking</a>
+    </div>
+    <ul class="list-group">
+      {% if bookings %}
+        {% for booking in bookings %}
+          <li class="list-group-item">
+            <span>
+              <strong>{{ booking.booking_number }}</strong>: {{ booking.origin }} to {{ booking.destination }}
+            </span>
+            <span>
+              <a href="{% url 'booking_update' booking.booking_id %}" class="btn btn-primary btn-sm">Edit</a>
+              <a href="{% url 'booking_delete' booking.booking_id %}" class="btn btn-danger btn-sm">Delete</a>
+            </span>
+          </li>
+        {% endfor %}
+      {% else %}
+        <li class="list-group-item">
+          No bookings found. Add one to get started!
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+</body>
+</html>
