@@ -17,11 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+#User Authentication
+from django.urls import path, include
+from django.contrib.auth import views as auth_views
+
 from myapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
+    path('', views.CustomLoginView.as_view(template_name='users/login.html'), name='login'),
 
     # Customer URLs
     path('customers/', views.customer_list, name='customer_list'),
@@ -65,8 +69,9 @@ urlpatterns = [
     path('drivers/delete/<int:pk>/', views.driver_delete, name='driver_delete'),  # Delete a driver
     path('drivers/form/<int:pk>/', views.driver_form, name='driver_form'),  # Form for creating or updating a driver
 
-]
+    #User Authentication
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('register/', views.register, name='register'),
+    path('login/', views.CustomLoginView.as_view(template_name='users/login.html'), name='login'),
 
-# urlpatterns = [
-#     path('admin/', admin.site.urls),
-# ]
+]

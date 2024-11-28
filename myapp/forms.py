@@ -1,5 +1,6 @@
 from django import forms
-from .models import Customer, Role, User, Booking, Container, ContainerStatus, Driver
+from .models import Customer, Role, User, Booking, Container, ContainerStatus, Driver, CustomUser
+from django.contrib.auth.forms import UserCreationForm
 
 class CustomerForm(forms.ModelForm):
     class Meta:
@@ -51,3 +52,8 @@ class DriverForm(forms.ModelForm):
     container = forms.ModelChoiceField(queryset=Container.objects.all(), required=True)
 
     # If you want to customize the form further, you can add widgets or validation rules
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'role', 'password1', 'password2']

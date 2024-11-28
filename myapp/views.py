@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -299,3 +299,34 @@ def driver_form(request, pk=None):
         form = DriverForm(instance=driver)
     
     return render(request, 'driver/driver_form.html', {'form': form})
+
+#User Authentication
+from django.contrib.auth import login
+from .forms import CustomUserCreationForm
+from django.contrib import messages
+
+def register(request):
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('login')  # Redirect to home or dashboard
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'users/register.html', {'form': form})
+
+from django.contrib.auth.views import LoginView
+
+class CustomLoginView(LoginView):
+    def dispatch(self, request, *args, **kwargs):
+        # Redirect authenticated users to the customer list page
+        if request.user.is_authenticated:
+            messages.info(request, f"You are already logged in as {request.user.username}.")
+            return redirect('customer_list')
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Invalid username or password. Please try again.")
+        return super().form_invalid(form)
+
