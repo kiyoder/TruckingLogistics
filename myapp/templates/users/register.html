@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .register-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .register-container h2 {
+            margin-bottom: 20px;
+            color: #111827;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .register-container p {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .register-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .register-container form label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .register-container form input,
+        .register-container form select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .register-container form input:focus,
+        .register-container form select:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 3px rgba(30, 58, 138, 0.5);
+        }
+
+        .register-container .password-rules {
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f9fafb;
+            border-left: 3px solid #1e3a8a;
+        }
+
+        .register-container form button {
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .register-container form button:hover {
+            background-color: #162d7d;
+        }
+
+        .register-container .login-link {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .register-container .login-link a {
+            color: #1e3a8a;
+            text-decoration: none;
+        }
+
+        .register-container .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <h2>Create Your Account</h2>
+    <p>Fill in the form below to get started!</p>
+    <form method="post">
+        {% csrf_token %}
+        <label for="id_username">Username:</label>
+        {{ form.username }}
+
+        <label for="id_email">Email Address:</label>
+        {{ form.email }}
+
+        <label for="id_role">Role:</label>
+        {{ form.role }}
+
+        <label for="id_password1">Password:</label>
+        {{ form.password1 }}
+        <div class="password-rules">
+            <ul>
+                <li>Your password must be at least 8 characters long.</li>
+                <li>Your password must not be too similar to your personal information.</li>
+                <li>Your password cannot be a commonly used password.</li>
+                <li>Your password cannot be entirely numeric.</li>
+            </ul>
+        </div>
+
+        <label for="id_password2">Confirm Password:</label>
+        {{ form.password2 }}
+
+        <button type="submit">Register</button>
+    </form>
+    <div class="login-link">
+        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </div>
+</div>
+</body>
+</html>

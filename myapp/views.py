@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -79,7 +79,7 @@ def customer_update(request, pk):
         # Initialize the form with the existing data for editing
         form = CustomerForm(instance=customer)
     
-    return render(request, 'customers/customer_form.html', {'form': form})
+    return render(request, 'customers/customer_form.html', {'form': form, 'customer': customer})
 
 def customer_delete(request, pk):
     customer = get_object_or_404(Customer, customer_id=pk)
@@ -128,36 +128,56 @@ def user_delete(request, pk):
 
 #BOOKINGS
 
-from .models import Booking
-from .forms import BookingForm
+
 
 def booking_list(request):
     bookings = Booking.objects.all()
     return render(request, 'booking/booking_list.html', {'bookings': bookings})
 
+from django.shortcuts import render, redirect
+from .models import Booking
+from .forms import BookingForm
+from datetime import datetime
+
 def booking_create(request):
     if request.method == 'POST':
         form = BookingForm(request.POST)
         if form.is_valid():
-            form.save()
+            booking = form.save(commit=False)
+            # Automatically set booking_number and created_by
+            booking_number = form.cleaned_data['booking_number']
+            booking.booking_number = booking_number
+            booking.created_by = request.user
+            booking.save()
             return redirect('booking_list')
     else:
-        form = BookingForm()
+        # Generate the booking number
+        current_year = datetime.now().year
+        last_booking = Booking.objects.filter(booking_number__startswith=str(current_year)).order_by('id').last()
+        if last_booking:
+            last_number = int(last_booking.booking_number.split('-')[1])
+            new_number = f"{current_year}-{last_number + 1:05d}"
+        else:
+            new_number = f"{current_year}-00001"
+
+        form = BookingForm(initial={'booking_number': new_number})
+
     return render(request, 'booking/booking_form.html', {'form': form})
 
 def booking_update(request, pk):
-    booking = Booking.objects.get(booking_id=pk)
+    booking = Booking.objects.get(pk=pk)
     if request.method == 'POST':
         form = BookingForm(request.POST, instance=booking)
         if form.is_valid():
             form.save()
             return redirect('booking_list')
     else:
+        # Pass the booking instance to the form
         form = BookingForm(instance=booking)
     return render(request, 'booking/booking_form.html', {'form': form})
-
 def booking_delete(request, pk):
-    booking = Booking.objects.get(booking_id=pk)
+    #booking = Booking.objects.get(booking_id=pk)
+    booking = Booking.objects.get(id=pk) #updated
     if request.method == 'POST':
         booking.delete()
         return redirect('booking_list')
@@ -177,10 +197,10 @@ def container_create(request):
     if request.method == 'POST':
         form = ContainerForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('container_list')
+            form.save()  # Save the form data
+            return redirect('container_list')  # Redirect after successful save
     else:
-        form = ContainerForm()
+        form = ContainerForm()  # If it's a GET request, show an empty form
     return render(request, 'container/container_form.html', {'form': form})
 
 def container_update(request, pk):
@@ -299,3 +319,34 @@ def driver_form(request, pk=None):
         form = DriverForm(instance=driver)
     
     return render(request, 'driver/driver_form.html', {'form': form})
+
+#User Authentication
+from django.contrib.auth import login
+from .forms import CustomUserCreationForm
+from django.contrib import messages
+
+def register(request):
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('login')  # Redirect to home or dashboard
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'users/register.html', {'form': form})
+
+from django.contrib.auth.views import LoginView
+
+class CustomLoginView(LoginView):
+    def dispatch(self, request, *args, **kwargs):
+        # Redirect authenticated users to the customer list page
+        if request.user.is_authenticated:
+            messages.info(request, f"You are already logged in as {request.user.username}.")
+            return redirect('customer_list')
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Invalid username or password. Please try again.")
+        return super().form_invalid(form)
+

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer Management</title>
+  <title>Customer Form</title>
   <style>
     /* Basic Reset */
     * {
@@ -17,156 +17,141 @@
     body {
       display: flex;
       min-height: 100vh;
-      background-color: #f7fafc;
-      flex-direction: column;
+      background-color: #f8f9fa;
+      color: #333;
     }
 
     /* Sidebar styling */
     .sidebar {
-            width: 250px;
-            background-color: #f3f4f6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20px;
-            height: 100vh;
-            position: fixed;
-            left: 0;
-        }
+      width: 250px;
+      background-color: #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+    }
 
-        .sidebar img {
-            width: 100px;
-            margin-bottom: 20px;
-            border-radius: 50%;
-        }
+    .sidebar img {
+      width: 100px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+    }
 
-        .sidebar a {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            padding: 15px;
-            text-decoration: none;
-            color: #333;
-            font-size: 16px;
-            font-weight: 500;
-        }
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 15px;
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+      font-weight: 500;
+    }
 
-        .sidebar a.active, .sidebar a:hover {
-            background-color: #e0e7ff;
-            color: #1e3a8a;
-        }
+    .sidebar a.active, .sidebar a:hover {
+      background-color: #e0e7ff;
+      color: #1e3a8a;
+    }
 
-        .sidebar .icon {
-            margin-right: 10px;
-        }
+    .sidebar .icon {
+      margin-right: 10px;
+    }
 
-        .sidebar .bottom-links {
-            margin-top: auto;
-            margin-bottom: 20px;
-        }
+    .sidebar .bottom-links {
+      margin-top: auto;
+      margin-bottom: 20px;
+    }
 
     /* Main Content */
     .content {
       margin-left: 270px;
-      width: 100%;
-      padding: 40px 20px;
-      flex: 1;
+      width: calc(100% - 270px);
+      padding: 40px;
+    }
+
+    .header {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-    }
-
-    .form-container {
-      text-align: center;
-      max-width: 500px;
-      width: 100%;
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-      font-size: 28px;
       margin-bottom: 20px;
-      color: #111827;
+    }
+
+    .header h2 {
+      font-size: 24px;
+      color: #1e3a8a;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      color: #ffffff;
+      font-size: 14px;
       font-weight: bold;
+      transition: background-color 0.3s;
     }
 
-    h2 {
-      font-size: 22px;
+    .btn-success {
+      background-color: #1a237e;
+    }
+
+    .btn-success:hover {
+      background-color: #1a237e;
+    }
+
+    .form-group {
       margin-bottom: 20px;
-      color: #4c51bf;
+    }
+
+    .form-group label {
       font-weight: 600;
     }
 
-    .form-container form {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .form-container input, .form-container select, .form-container textarea {
+    .form-group input {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
-      box-sizing: border-box;
-      transition: border-color 0.3s ease;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
 
-    .form-container input:focus, .form-container select:focus, .form-container textarea:focus {
-      border-color: #4c51bf;
-      outline: none;
-    }
-
-    button {
-      background-color: #4c51bf;
-      color: white;
-      font-size: 16px;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #3b4db2;
-    }
-
-    .form-container a {
-      text-decoration: none;
-      color: #4c51bf;
-      font-size: 14px;
-      margin-top: 20px;
-      display: inline-block;
-      transition: color 0.3s ease;
-    }
-
-    .form-container a:hover {
-      color: #2c3e8c;
+    .form-group input:focus {
+      border-color: #1e3a8a;
     }
     
-    /* Mobile Responsiveness */
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 200px;
-      }
+    .form-group button {
+      background-color: #007bff;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-      .content {
-        margin-left: 220px;
-      }
+    .form-group button:hover {
+      background-color: #0056b3;
+    }
 
-      .form-container {
-        max-width: 400px;
-        width: 100%;
-      }
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: none;
+    }
+
+    .form-group textarea:focus {
+      border-color: #1e3a8a;
     }
   </style>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <img src="{% static 'images/logo.png' %}" alt="Logo">
     <a href="#"><span class="icon">🏠</span> Dashboard</a>
@@ -175,24 +160,49 @@
     <a href="{% url 'container_list' %}"><span class="icon">🚛</span> Container Hub</a>
     <a href="{% url 'driver_list' %}"><span class="icon">👥</span> Driver</a>
     <a href="{% url 'user_list' %}"><span class="icon">👤</span> User Hub</a>
-    <a href="#"><span class="icon">🔒</span> Security</a>
     <a href="#"><span class="icon">🔔</span> Notification</a>
     <div class="bottom-links">
-        <a href="#"><span class="icon">⚙️</span> Settings</a>
-        <a href="#"><span class="icon">🚪</span> Logout</a>
+      <a href="#"><span class="icon">⚙️</span> Settings</a>
+      <a href="#"><span class="icon">🚪</span> Logout</a>
     </div>
   </div>
 
+  <!-- Main Content -->
   <div class="content">
-    <div class="form-container">
-      <h1>Customer Management</h1>
+    <div class="header">
       <h2>Customer Form</h2>
-      <form method="POST" action="{% url 'customer_create' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-      </form>
-      <a href="{% url 'customer_list' %}">Back to Customer List</a>
+      <a href="{% url 'customer_list' %}" class="btn btn-success">Back to Customer Hub</a>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <form method="POST" class="form-horizontal" action="{% if customer.pk %}{% url 'customer_update' customer.pk %}{% else %}{% url 'customer_create' %}{% endif %}">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="id_name">Name</label>
+            {{ form.name }}
+          </div>
+          <div class="form-group">
+            <label for="id_contact_number">Contact Number</label>
+            {{ form.contact_number }}
+          </div>
+          <div class="form-group">
+            <label for="id_email">Email</label>
+            {{ form.email }}
+          </div>
+          <div class="form-group">
+            <label for="id_address">Address</label>
+            {{ form.address }}
+          </div>
+          <div class="form-group">
+            <label for="id_company_name">Company Name</label>
+            {{ form.company_name }}
+          </div>
+          <div class="form-group">
+            <button type="submit">{% if customer.pk %}Update{% else %}Create{% endif %} Customer</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </body>

@@ -149,7 +149,6 @@
     <a href="{% url 'container_list' %}"><span class="icon">🚛</span> Container Hub</a>
     <a href="{% url 'driver_list' %}"><span class="icon">👥</span> Driver</a>
     <a href="{% url 'user_list' %}"><span class="icon">👤</span> User Hub</a>
-    <a href="#"><span class="icon">🔒</span> Security</a>
     <a href="#"><span class="icon">🔔</span> Notification</a>
     <div class="bottom-links">
       <a href="#"><span class="icon">⚙️</span> Settings</a>
@@ -168,10 +167,15 @@
       <div class="card-body">
         <form method="POST" class="form-horizontal">
           {% csrf_token %}
-          <div class="form-group">
-            <label for="id_booking_number">Booking Number</label>
-            {{ form.booking_number }}
-          </div>
+            <div class="form-group">
+                <label for="id_booking_number_display">Booking Number
+                {{ form.booking_number }}
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="id_created_by">Created by</label>
+                <input type="text" disabled="true" id="id_created_by" value="{{ request.user.username }}" readonly class="form-control" />
+            </div>
           <div class="form-group">
             <label for="id_customer">Customer</label>
             {{ form.customer }}
@@ -183,10 +187,6 @@
           <div class="form-group">
             <label for="id_destination">Destination</label>
             {{ form.destination }}
-          </div>
-          <div class="form-group">
-            <label for="id_created_by">Created by</label>
-            {{ form.created_by }}
           </div>
           <div class="form-group">
             <label for="id_status">Status</label>
