@@ -187,7 +187,7 @@
     <div class="form-container">
       <h1>Customer Management</h1>
       <h2>Customer Form</h2>
-      <form method="POST" action="{% url 'customer_create' %}">
+      <form method="POST" action="{% url 'customer_update' customer.pk %}">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Save</button>

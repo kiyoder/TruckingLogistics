@@ -79,7 +79,7 @@ def customer_update(request, pk):
         # Initialize the form with the existing data for editing
         form = CustomerForm(instance=customer)
     
-    return render(request, 'customers/customer_form.html', {'form': form})
+    return render(request, 'customers/customer_form.html', {'form': form, 'customer': customer})
 
 def customer_delete(request, pk):
     customer = get_object_or_404(Customer, customer_id=pk)
