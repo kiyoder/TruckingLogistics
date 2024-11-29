@@ -187,11 +187,11 @@
     <div class="form-container">
       <h1>Customer Management</h1>
       <h2>Customer Form</h2>
-      <form method="POST" action="{% url 'customer_update' customer.pk %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-      </form>
+        <form method="POST" action="{% if customer.pk %}{% url 'customer_update' customer.pk %}{% else %}{% url 'customer_create' %}{% endif %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="add-button">{% if customer.pk %}Update{% else %}Create{% endif %} Customer</button>
+        </form>
       <a href="{% url 'customer_list' %}">Back to Customer List</a>
     </div>
   </div>
