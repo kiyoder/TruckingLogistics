@@ -50,7 +50,19 @@ class BookingForm(forms.ModelForm):
             self.fields['booking_number'].initial = kwargs['initial']['booking_number']
 
 
+#class ContainerForm(forms.ModelForm):
+#    class Meta:
+#        model = Container
+#       fields = '__all__'
+
 class ContainerForm(forms.ModelForm):
+    booking_number = forms.ModelChoiceField(
+        queryset=Booking.objects.all(),  # Fetch all bookings
+        empty_label="Select a Booking",  # Optional placeholder
+        label="Booking",
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
     class Meta:
         model = Container
         fields = '__all__'

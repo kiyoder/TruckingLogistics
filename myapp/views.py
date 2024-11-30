@@ -176,7 +176,8 @@ def booking_update(request, pk):
         form = BookingForm(instance=booking)
     return render(request, 'booking/booking_form.html', {'form': form})
 def booking_delete(request, pk):
-    booking = Booking.objects.get(booking_id=pk)
+    #booking = Booking.objects.get(booking_id=pk)
+    booking = Booking.objects.get(id=pk) #updated
     if request.method == 'POST':
         booking.delete()
         return redirect('booking_list')
@@ -196,10 +197,10 @@ def container_create(request):
     if request.method == 'POST':
         form = ContainerForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('container_list')
+            form.save()  # Save the form data
+            return redirect('container_list')  # Redirect after successful save
     else:
-        form = ContainerForm()
+        form = ContainerForm()  # If it's a GET request, show an empty form
     return render(request, 'container/container_form.html', {'form': form})
 
 def container_update(request, pk):
