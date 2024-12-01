@@ -95,11 +95,11 @@
         }
 
         .btn-success {
-            background-color: #1a237e;
+            background-color: #2563eb; /* Modern blue */
         }
 
         .btn-success:hover {
-            background-color: #1a237e;
+            background-color: #1e40af; /* Darker modern blue */
         }
 
         .list-container {
@@ -130,26 +130,27 @@
         }
 
         .status {
-            padding: 5px 10px;
+            padding: 10px 20px;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: bold;
             text-align: center;
+            display: inline-block;
         }
 
         .status-ongoing {
-            background-color: #ffeb3b;
-            color: #000;
+            background-color: #facc15; /* Soft amber */
+            color: #1e293b; /* Charcoal */
         }
 
         .status-completed {
-            background-color: #4caf50;
-            color: #fff;
+            background-color: #34d399; /* Soft green */
+            color: #ffffff;
         }
 
         .status-cancelled {
-            background-color: #f44336;
-            color: #fff;
+            background-color: #ef4444; /* Soft red */
+            color: #ffffff;
         }
 
         .btn-group {
@@ -165,33 +166,37 @@
             border: none;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            text-decoration: none; /* Remove underline for all buttons */
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .btn-primary {
-            background-color: #007bff;
+            background-color: #3b82f6; /* Bright blue */
             color: #fff;
         }
 
         .btn-primary:hover {
-            background-color: #0056b3;
+            background-color: #2563eb; /* Darker bright blue */
         }
 
         .btn-cancel {
-            background-color: #ff9800;
+            background-color: #f97316; /* Warm orange */
             color: #fff;
         }
 
         .btn-cancel:hover {
-            background-color: #e68a00;
+            background-color: #ea580c; /* Darker warm orange */
         }
 
         .btn-danger {
-            background-color: #dc3545;
+            background-color: #ef4444; /* Bright red */
             color: #fff;
         }
 
         .btn-danger:hover {
-            background-color: #c82333;
+            background-color: #dc2626; /* Darker bright red */
         }
     </style>
 </head>
@@ -231,10 +236,16 @@
               </span>
                     </div>
                     <div class="btn-group">
-                        <a href="{% url 'booking_update' booking.pk %}" class="btn-lg btn-primary">Edit</a>
-                        <a href="{% url 'booking_delete' booking.pk %}" class="btn-lg btn-danger">Delete</a>
+                        <a href="{% url 'booking_update' booking.pk %}" class="btn-lg btn-primary">
+                            Edit
+                        </a>
+                        <a href="{% url 'booking_delete' booking.pk %}" class="btn-lg btn-danger">
+                            Delete
+                        </a>
                         {% if booking.status != 'Cancelled' %}
-                            <button onclick="confirmCancel('{{ booking.pk }}')" class="btn-lg btn-cancel">Cancel</button>
+                            <button onclick="confirmCancel('{{ booking.pk }}')" class="btn-lg btn-cancel">
+                                Cancel
+                            </button>
                         {% endif %}
                     </div>
                 </div>
