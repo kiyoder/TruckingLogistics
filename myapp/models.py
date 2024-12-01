@@ -54,7 +54,7 @@ class Booking(models.Model):
     origin = models.CharField(max_length=255)
     destination = models.CharField(max_length=255)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='created_bookings')
-    status = models.CharField(max_length=255)
+    status = models.CharField(max_length=255, default="Ongoing")
 
     def save(self, *args, **kwargs):
         if not self.booking_number:  # Only generate if not already set

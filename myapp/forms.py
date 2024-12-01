@@ -42,12 +42,18 @@ class BookingForm(forms.ModelForm):
 
     class Meta:
         model = Booking
-        fields = ['customer', 'origin', 'destination', 'status']
+        fields = ['customer', 'origin', 'destination']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if 'initial' in kwargs and 'booking_number' in kwargs['initial']:
             self.fields['booking_number'].initial = kwargs['initial']['booking_number']
+
+    def clean_customer(self):
+        customer = self.cleaned_data.get('customer')
+        if not customer:  # No customer selected
+            raise forms.ValidationError("You must select an existing customer.")
+        return customer
 
 
 #class ContainerForm(forms.ModelForm):

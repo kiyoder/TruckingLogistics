@@ -2,180 +2,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booking Management</title>
-  <style>
-    /* Basic Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Management</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-    body {
-      display: flex;
-      min-height: 100vh;
-      background-color: #f8f9fa;
-      color: #333;
-    }
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            color: #333;
+        }
 
-    /* Sidebar styling */
-    .sidebar {
-      width: 250px;
-      background-color: #f3f4f6;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 20px;
-      height: 100vh;
-      position: fixed;
-      left: 0;
-    }
+        /* Sidebar styling */
+        .sidebar {
+            width: 250px;
+            background-color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+        }
 
-    .sidebar img {
-      width: 100px;
-      margin-bottom: 20px;
-      border-radius: 50%;
-    }
+        .sidebar img {
+            width: 100px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+        }
 
-    .sidebar a {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      padding: 15px;
-      text-decoration: none;
-      color: #333;
-      font-size: 16px;
-      font-weight: 500;
-    }
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 15px;
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+        }
 
-    .sidebar a.active, .sidebar a:hover {
-      background-color: #e0e7ff;
-      color: #1e3a8a;
-    }
+        .sidebar a.active, .sidebar a:hover {
+            background-color: #e0e7ff;
+            color: #1e3a8a;
+        }
 
-    .sidebar .icon {
-      margin-right: 10px;
-    }
+        .sidebar .icon {
+            margin-right: 10px;
+        }
 
-    .sidebar .bottom-links {
-      margin-top: auto;
-      margin-bottom: 20px;
-    }
+        .sidebar .bottom-links {
+            margin-top: auto;
+            margin-bottom: 20px;
+        }
 
-    /* Main Content */
-    .content {
-      margin-left: 270px;
-      width: calc(100% - 270px);
-      padding: 40px;
-    }
+        /* Main Content */
+        .content {
+            margin-left: 270px;
+            width: calc(100% - 270px);
+            padding: 40px;
+        }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-    .header h2 {
-      font-size: 24px;
-      color: #111827;
-    }
+        .header h2 {
+            font-size: 24px;
+            color: #111827;
+        }
 
-    .btn {
-      text-decoration: none;
-      padding: 10px 15px;
-      border-radius: 4px;
-      color: #ffffff;
-      font-size: 14px;
-      font-weight: bold;
-      transition: background-color 0.3s;
-    }
+        .btn {
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
 
-    .btn-success {
-      background-color: #1a237e;
-    }
+        .btn-success {
+            background-color: #1a237e;
+        }
 
-    .btn-success:hover {
-      background-color: #1a237e;
-    }
+        .btn-success:hover {
+            background-color: #1a237e;
+        }
 
-    .list-group {
-      list-style: none;
-      padding: 0;
-      margin-top: 10px;
-    }
+        .list-container {
+            margin-top: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-    .list-group-item {
-      background-color: #ffffff;
-      border: 1px solid #e0e0e0;
-      padding: 15px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+        .list-header {
+            display: grid;
+            grid-template-columns: 1.5fr 1.5fr 1fr 1fr 2fr;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 2px solid #e0e0e0;
+            font-weight: bold;
+            color: #555;
+        }
 
-    .btn-sm {
-      padding: 5px 10px;
-      font-size: 12px;
-      margin-left: 5px;
-    }
+        .list-item {
+            display: grid;
+            grid-template-columns: 1.5fr 1.5fr 1fr 1fr 2fr;
+            gap: 10px;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
 
-    .btn-primary {
-      background-color: #007bff;
-      border: none;
-    }
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
 
-    .btn-primary:hover {
-      background-color: #0056b3;
-    }
+        .status-ongoing {
+            background-color: #ffeb3b;
+            color: #000;
+        }
 
-    .btn-danger {
-      background-color: #dc3545;
-      border: none;
-    }
+        .status-completed {
+            background-color: #4caf50;
+            color: #fff;
+        }
 
-    .btn-danger:hover {
-      background-color: #c82333;
-    }
-  </style>
+        .status-cancelled {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-lg {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-cancel {
+            background-color: #ff9800;
+            color: #fff;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e68a00;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
-  <!-- Sidebar -->
-  <{% include 'includes/sidebar.html' %}
+<!-- Sidebar -->
+<{% include 'includes/sidebar.html' %}
 
-
-  <!-- Main Content -->
-  <div class="content">
+<!-- Main Content -->
+<div class="content">
     <div class="header">
-      <h2>Bookings</h2>
-      <a href="{% url 'booking_create' %}" class="btn btn-success">Add Booking</a>
+        <h2>Bookings</h2>
+        <a href="{% url 'booking_create' %}" class="btn btn-success">Add Booking</a>
     </div>
-    <ul class="list-group">
-      {% if bookings %}
-        {% for booking in bookings %}
-          <li class="list-group-item">
-            <span>
-              <strong>{{ booking.booking_number }}</strong>: {{ booking.origin }} to {{ booking.destination }}
-            </span>
-            <span>
-                <a href="{% url 'booking_update' booking.pk %}" class="btn btn-primary btn-sm">Edit</a>
-                <a href="{% url 'booking_delete' booking.pk %}" class="btn btn-danger btn-sm">Delete</a>
+    <div class="list-container">
+        <!-- List Header -->
+        <div class="list-header">
+            <div>Booking Number</div>
+            <div>Origin</div>
+            <div>Destination</div>
+            <div>Status</div>
+            <div>Actions</div>
+        </div>
+        <!-- List Items -->
+        {% if bookings %}
+            {% for booking in bookings %}
+                <div class="list-item">
+                    <div>{{ booking.booking_number }}</div>
+                    <div>{{ booking.origin }}</div>
+                    <div>{{ booking.destination }}</div>
+                    <div>
+              <span class="status 
+                {% if booking.status == 'Ongoing' %}status-ongoing
+                {% elif booking.status == 'Completed' %}status-completed
+                {% elif booking.status == 'Cancelled' %}status-cancelled
+                {% endif %}">
+                {{ booking.status }}
+              </span>
+                    </div>
+                    <div class="btn-group">
+                        <a href="{% url 'booking_update' booking.pk %}" class="btn-lg btn-primary">Edit</a>
+                        <a href="{% url 'booking_delete' booking.pk %}" class="btn-lg btn-danger">Delete</a>
+                        {% if booking.status != 'Cancelled' %}
+                            <button onclick="confirmCancel('{{ booking.pk }}')" class="btn-lg btn-cancel">Cancel</button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="list-item">
+                <div colspan="5" style="text-align: center;">No bookings found. Add one to get started!</div>
+            </div>
+        {% endif %}
+    </div>
+</div>
 
-            </span>
-          </li>
-        {% endfor %}
-      {% else %}
-        <li class="list-group-item">
-          No bookings found. Add one to get started!
-        </li>
-      {% endif %}
-    </ul>
-  </div>
+<script>
+    function confirmCancel(bookingId) {
+        if (confirm("Are you sure you want to cancel this booking?")) {
+            window.location.href = `/bookings/cancel/${bookingId}/`;
+        }
+    }
+</script>
 </body>
 </html>
