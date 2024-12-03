@@ -37,8 +37,16 @@ from .models import Booking
 #                 widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'})
 #             )
 
+
 class BookingForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        ('in_transit', 'In Transit'),
+        ('out_for_delivery', 'Out for Delivery'),
+        ('delivered', 'Delivered'),
+    ]
+    
     booking_number = forms.CharField(disabled=True, required=False, label="Booking Number")
+    status = forms.ChoiceField(choices=STATUS_CHOICES, required=True, label="Status")
 
     class Meta:
         model = Booking
@@ -48,6 +56,7 @@ class BookingForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if 'initial' in kwargs and 'booking_number' in kwargs['initial']:
             self.fields['booking_number'].initial = kwargs['initial']['booking_number']
+
 
 
 #class ContainerForm(forms.ModelForm):
