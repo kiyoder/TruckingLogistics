@@ -59,28 +59,30 @@ def customer_create(request):
         form = CustomerForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Customer created successfully.")
             return redirect('customer_list')
+        else:
+            # Pass form errors to template
+            return render(request, 'customers/customer_form.html', {'form': form, 'errors': form.errors})
     else:
         form = CustomerForm()
     return render(request, 'customers/customer_form.html', {'form': form})
 
 
 def customer_update(request, pk):
-    # Fetch the existing customer instance by primary key
     customer = get_object_or_404(Customer, pk=pk)
-
     if request.method == "POST":
-        # Bind the form to the existing customer instance
         form = CustomerForm(request.POST, instance=customer)
         if form.is_valid():
-            form.save()  # Updates the existing customer
-            return redirect('customer_list')  # Redirect to the customer list after saving
+            form.save()
+            messages.success(request, "Customer updated successfully.")
+            return redirect('customer_list')
+        else:
+            # Pass form errors to template
+            return render(request, 'customers/customer_form.html', {'form': form, 'errors': form.errors, 'customer': customer})
     else:
-        # Initialize the form with the existing data for editing
         form = CustomerForm(instance=customer)
-    
     return render(request, 'customers/customer_form.html', {'form': form, 'customer': customer})
-
 def customer_delete(request, pk):
     customer = get_object_or_404(Customer, customer_id=pk)
 
@@ -130,14 +132,14 @@ def user_delete(request, pk):
 
 
 
-def booking_list(request):
-    bookings = Booking.objects.all()
-    return render(request, 'booking/booking_list.html', {'bookings': bookings})
-
 from django.shortcuts import render, redirect
 from .models import Booking
 from .forms import BookingForm
 from datetime import datetime
+
+def booking_list(request):
+    bookings = Booking.objects.all()
+    return render(request, 'booking/booking_list.html', {'bookings': bookings})
 
 def booking_create(request):
     if request.method == 'POST':
@@ -148,6 +150,7 @@ def booking_create(request):
             booking_number = form.cleaned_data['booking_number']
             booking.booking_number = booking_number
             booking.created_by = request.user
+            booking.status = "Pending"
             booking.save()
             return redirect('booking_list')
     else:
@@ -183,7 +186,18 @@ def booking_delete(request, pk):
         return redirect('booking_list')
     return render(request, 'booking/booking_confirm_delete.html', {'booking': booking})
 
+def booking_cancel(request, pk):
+    booking = get_object_or_404(Booking, pk=pk)
+    booking.status = "Cancelled"
+    booking.save()
+    return redirect('booking_list')
 
+def booking_confirm(request, pk):
+    booking = get_object_or_404(Booking, pk=pk)
+    if booking.status == "Pending":
+        booking.status = "Ongoing"
+        booking.save()
+    return redirect('booking_list')
 
 #CONTAINER
 from .models import Container

@@ -1,0 +1,25 @@
+{% load static %}
+<div class="sidebar">
+    <img src="{% static 'images/logo.png' %}" alt="Logo">
+    <a href="#"><span class="icon">🏠</span> Dashboard</a>
+    <a href="{% url 'customer_list' %}" class="{% if request.resolver_match.url_name == 'customer_list' %}active{% endif %}">
+        <span class="icon">👤</span> Customer Hub
+    </a>
+    <a href="{% url 'booking_list' %}" class="{% if request.resolver_match.url_name == 'booking_list' %}active{% endif %}">
+        <span class="icon">📦</span> Booking Hub
+    </a>
+    <a href="{% url 'container_list' %}" class="{% if request.resolver_match.url_name == 'container_list' %}active{% endif %}">
+        <span class="icon">🚛</span> Container Hub
+    </a>
+    <a href="{% url 'driver_list' %}" class="{% if request.resolver_match.url_name == 'driver_list' %}active{% endif %}">
+        <span class="icon">👥</span> Driver
+    </a>
+    <a href="{% url 'user_list' %}" class="{% if request.resolver_match.url_name == 'user_list' %}active{% endif %}">
+        <span class="icon">👤</span> User Hub
+    </a>
+    <a href="#"><span class="icon">🔔</span> Notification</a>
+    <div class="bottom-links">
+        <a href="#"><span class="icon">⚙️</span> Settings</a>
+        <a href="#"><span class="icon">🚪</span> Logout</a>
+    </div>
+</div>
