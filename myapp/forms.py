@@ -37,26 +37,41 @@ from .models import Booking
 #                 widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'})
 #             )
 
-
 class BookingForm(forms.ModelForm):
-    STATUS_CHOICES = [
-        ('in_transit', 'In Transit'),
-        ('out_for_delivery', 'Out for Delivery'),
-        ('delivered', 'Delivered'),
-    ]
-    
-    booking_number = forms.CharField(disabled=True, required=False, label="Booking Number")
-    status = forms.ChoiceField(choices=STATUS_CHOICES, required=True, label="Status")
+    booking_number = forms.CharField(
+        required=False,
+        disabled=True,
+        label="Booking Number",
+        widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'})
+    )
+    status = forms.ChoiceField(
+        choices=[
+            ('Pending', 'Pending'),
+            ('Ongoing', 'Ongoing'),
+            ('Completed', 'Completed'),
+            ('Cancelled', 'Cancelled'),
+        ],
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True
+    )
 
     class Meta:
         model = Booking
-        fields = ['customer', 'origin', 'destination', 'status']
+        fields = ['customer', 'origin', 'destination', 'status']  # Exclude 'booking_number'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if 'initial' in kwargs and 'booking_number' in kwargs['initial']:
-            self.fields['booking_number'].initial = kwargs['initial']['booking_number']
+        if not self.instance or not self.instance.pk:  # New instance
+            self.fields.pop('status')  # Remove status field for new bookings
+        else:
+            self.fields['booking_number'].initial = self.instance.booking_number
 
+
+    def clean_customer(self):
+        customer = self.cleaned_data.get('customer')
+        if not customer:  # No customer selected
+            raise forms.ValidationError("You must select an existing customer.")
+        return customer
 
 
 #class ContainerForm(forms.ModelForm):

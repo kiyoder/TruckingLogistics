@@ -148,6 +148,7 @@ def booking_create(request):
             booking_number = form.cleaned_data['booking_number']
             booking.booking_number = booking_number
             booking.created_by = request.user
+            booking.status = "Ongoing"
             booking.save()
             return redirect('booking_list')
     else:
@@ -164,18 +165,19 @@ def booking_create(request):
 
     return render(request, 'booking/booking_form.html', {'form': form})
 
+# views.py
 def booking_update(request, pk):
     booking = Booking.objects.get(pk=pk)
     if request.method == 'POST':
         form = BookingForm(request.POST, instance=booking)
         if form.is_valid():
             booking = form.save(commit=False)
-            booking.status = form.cleaned_data['status']  # Ensure status is saved
+            booking.status = form.cleaned_data['status']
             booking.save()
             return redirect('booking_list')
     else:
         form = BookingForm(instance=booking)
-        form.fields['booking_number'].initial = booking.booking_number
+
     return render(request, 'booking/booking_form.html', {'form': form})
 
 
@@ -187,7 +189,11 @@ def booking_delete(request, pk):
         return redirect('booking_list')
     return render(request, 'booking/booking_confirm_delete.html', {'booking': booking})
 
-
+def booking_cancel(request, pk):
+    booking = get_object_or_404(Booking, pk=pk)
+    booking.status = "Cancelled"
+    booking.save()
+    return redirect('booking_list')
 
 #CONTAINER
 from .models import Container
