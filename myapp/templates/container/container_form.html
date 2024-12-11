@@ -1,75 +1,208 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Container Form</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <style>
-        /* Inline CSS for demo purposes. Move to styles.css in production. */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-        .form-container {
-            max-width: 600px;
-            margin: 50px auto;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-        .form-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .form-container form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .form-container form input,
-        .form-container form select,
-        .form-container form textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        .form-container form input:focus,
-        .form-container form select:focus,
-        .form-container form textarea:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-        .form-container button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .form-container button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Container Form</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    /* Sidebar styling */
+    .sidebar {
+      width: 250px;
+      background-color: #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+    }
+
+    .sidebar img {
+      width: 100px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 15px;
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .sidebar a.active, .sidebar a:hover {
+      background-color: #e0e7ff;
+      color: #1e3a8a;
+    }
+
+    .sidebar .icon {
+      margin-right: 10px;
+    }
+
+    .sidebar .bottom-links {
+      margin-top: auto;
+      margin-bottom: 20px;
+    }
+
+    /* Main Content */
+    .content {
+      margin-left: 270px;
+      width: calc(100% - 270px);
+      padding: 40px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .header h2 {
+      font-size: 24px;
+      color: #1e3a8a;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .btn-success {
+      background-color: #1a237e;
+    }
+
+    .btn-success:hover {
+      background-color: #1a237e;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #1e3a8a;
+    }
+    
+    .form-group button {
+      background-color: #007bff;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .form-group button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Container Form</h2>
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Save</button>
-        </form>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="{% static 'images/logo.png' %}" alt="Logo">
+    <a href="#"><span class="icon">🏠</span> Dashboard</a>
+    <a href="{% url 'customer_list' %}"><span class="icon">👤</span> Customer Hub</a>
+    <a href="{% url 'booking_list' %}"><span class="icon">📦</span> Booking Hub</a>
+    <a href="{% url 'container_list' %}" class="active"><span class="icon">🚛</span> Container Hub</a>
+    <a href="{% url 'driver_list' %}"><span class="icon">👥</span> Driver</a>
+    <a href="{% url 'user_list' %}"><span class="icon">👤</span> User Hub</a>
+    <a href="#"><span class="icon">🔔</span> Notification</a>
+    <div class="bottom-links">
+      <a href="#"><span class="icon">⚙️</span> Settings</a>
+      <a href="#"><span class="icon">🚪</span> Logout</a>
     </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <div class="header">
+      <h2>Container Form</h2>
+      <a href="{% url 'container_list' %}" class="btn btn-success">Back to Container Hub</a>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <form method="POST" class="form-horizontal">
+          {% csrf_token %}
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            <li>{{ field|capfirst }}: {{ errors|join:", " }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+              <label for="id_booking">Booking</label>
+              {{ form.booking }}
+            </div>
+
+            <div class="form-group">
+              <label for="id_size">Size</label>
+              {{ form.size }}
+            </div>
+
+            <div class="form-group">
+              <label for="id_weight">Weight</label>
+              {{ form.weight }}
+            </div>
+
+            <div class="form-group">
+              <label for="id_contents">Contents</label>
+              {{ form.contents }}
+            </div>
+
+            <div class="form-group">
+              <button type="submit">Save</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

@@ -167,17 +167,22 @@ def booking_create(request):
 
     return render(request, 'booking/booking_form.html', {'form': form})
 
+# views.py
 def booking_update(request, pk):
     booking = Booking.objects.get(pk=pk)
     if request.method == 'POST':
         form = BookingForm(request.POST, instance=booking)
         if form.is_valid():
-            form.save()
+            booking = form.save(commit=False)
+            booking.status = form.cleaned_data['status']
+            booking.save()
             return redirect('booking_list')
     else:
-        # Pass the booking instance to the form
         form = BookingForm(instance=booking)
+
     return render(request, 'booking/booking_form.html', {'form': form})
+
+
 def booking_delete(request, pk):
     #booking = Booking.objects.get(booking_id=pk)
     booking = Booking.objects.get(id=pk) #updated
@@ -211,11 +216,14 @@ def container_create(request):
     if request.method == 'POST':
         form = ContainerForm(request.POST)
         if form.is_valid():
-            form.save()  # Save the form data
-            return redirect('container_list')  # Redirect after successful save
+            container = form.save(commit=False)
+            container.status = "Pending"  # Set default status explicitly
+            container.save()
+            return redirect('container_list')
     else:
-        form = ContainerForm()  # If it's a GET request, show an empty form
+        form = ContainerForm()
     return render(request, 'container/container_form.html', {'form': form})
+
 
 def container_update(request, pk):
     container = Container.objects.get(container_id=pk)
