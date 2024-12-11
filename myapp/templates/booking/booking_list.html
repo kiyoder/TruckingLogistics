@@ -152,6 +152,10 @@
             background-color: #ef4444; /* Soft red */
             color: #ffffff;
         }
+        .status-pending {
+            background-color: #e5e7eb; /* Light grey */
+            color: #374151; /* Dark grey */
+        }
 
         .btn-group {
             display: flex;
@@ -190,6 +194,15 @@
             background-color: #ea580c; /* Darker warm orange */
         }
 
+        .btn-confirm {
+        background-color: #22c55e; /* Bright green */
+        color: #ffffff;
+        }
+
+        .btn-confirm:hover {
+            background-color: #16a34a; /* Darker green */
+        }
+
         .btn-danger {
             background-color: #ef4444; /* Bright red */
             color: #fff;
@@ -202,7 +215,7 @@
 </head>
 <body>
 <!-- Sidebar -->
-<{% include 'includes/sidebar.html' %}
+{% include 'includes/sidebar.html' %}
 
 <!-- Main Content -->
 <div class="content">
@@ -229,6 +242,7 @@
                     <div>
               <span class="status 
                 {% if booking.status == 'Ongoing' %}status-ongoing
+                {% elif booking.status == 'Pending' %}status-pending
                 {% elif booking.status == 'Completed' %}status-completed
                 {% elif booking.status == 'Cancelled' %}status-cancelled
                 {% endif %}">
@@ -236,16 +250,12 @@
               </span>
                     </div>
                     <div class="btn-group">
-                        <a href="{% url 'booking_update' booking.pk %}" class="btn-lg btn-primary">
-                            Edit
-                        </a>
-                        <a href="{% url 'booking_delete' booking.pk %}" class="btn-lg btn-danger">
-                            Delete
-                        </a>
-                        {% if booking.status != 'Cancelled' %}
-                            <button onclick="confirmCancel('{{ booking.pk }}')" class="btn-lg btn-cancel">
-                                Cancel
-                            </button>
+                        <a href="{% url 'booking_update' booking.pk %}" class="btn-lg btn-primary">Edit</a>
+                        <a href="{% url 'booking_delete' booking.pk %}" class="btn-lg btn-danger">Delete</a>
+                        {% if booking.status == 'Pending' %}
+                            <a href="{% url 'booking_confirm' booking.pk %}" class="btn-lg btn-confirm">Confirm</a>
+                        {% elif booking.status != 'Cancelled' %}
+                            <button onclick="confirmCancel('{{ booking.pk }}')" class="btn-lg btn-cancel">Cancel</button>
                         {% endif %}
                     </div>
                 </div>
@@ -262,6 +272,14 @@
     function confirmCancel(bookingId) {
         if (confirm("Are you sure you want to cancel this booking?")) {
             window.location.href = `/bookings/cancel/${bookingId}/`;
+        }
+    }
+</script>
+
+<script>
+    function confirmConfirm(bookingId) {
+        if (confirm("Are you sure you want to confirm this booking?")) {
+            window.location.href = `/bookings/confirm/${bookingId}/`;
         }
     }
 </script>

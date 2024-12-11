@@ -141,7 +141,7 @@
 </head>
 <body>
   <!-- Sidebar -->
-  <{% include 'includes/sidebar.html' %}
+  {% include 'includes/sidebar.html' %}
 
   <!-- Main Content -->
   <div class="content">
@@ -165,10 +165,15 @@
             {% endif %}
 
             <div class="form-group">
-                <label for="id_booking_number_display">Booking Number
-                {{ form.booking_number }}
-                </label>
-            </div>
+              <label for="id_booking_number">Booking Number</label>
+              {% if form.instance.pk %}
+                  <!-- Show booking number when editing -->
+                  <input type="text" disabled="true" id="id_booking_number" name="booking_number" value="{{ form.instance.booking_number }}" readonly class="form-control">
+              {% else %}
+                  <!-- Show placeholder or leave empty when adding -->
+                  <input type="text" disabled="true" id="id_booking_number" name="booking_number" value="Will be auto-generated" readonly class="form-control">
+              {% endif %}
+          </div>    
             <div class="form-group">
                 <label for="id_created_by">Created by</label>
                 <input type="text" disabled="true" id="id_created_by" value="{{ request.user.username }}" readonly class="form-control" />

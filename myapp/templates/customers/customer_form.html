@@ -148,7 +148,58 @@
     .form-group textarea:focus {
       border-color: #1e3a8a;
     }
+    .modal {
+            display: none; /* Hidden by default */
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0, 0, 0, 0.5); 
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%; 
+            border-radius: 5px;
+        }
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            color: red;
+        }
   </style>
+  <script>
+    function closeModal() {
+        document.getElementById("errorModal").style.display = "none";
+    }
+
+    // Automatically show the modal if errors exist
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("errorModal");
+        if (modal) {
+            modal.style.display = "block";
+        }
+    });
+</script>
 </head>
 <body>
   <!-- Sidebar -->
@@ -173,6 +224,22 @@
       <h2>Customer Form</h2>
       <a href="{% url 'customer_list' %}" class="btn btn-success">Back to Customer Hub</a>
     </div>
+
+    {% if errors %}
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>Validation Error</h2>
+            <ul>
+                {% for field, error_list in errors.items %}
+                    {% for error in error_list %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
 
     <div class="card">
       <div class="card-body">

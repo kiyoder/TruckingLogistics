@@ -1,11 +1,30 @@
 from django import forms
 from .models import Customer, Role, User, Booking, Container, ContainerStatus, Driver, CustomUser
 from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
 
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
         fields = '__all__'
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if Customer.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise ValidationError(f"This email already exists with Customer ID: {Customer.objects.get(email=email).customer_id}")
+        return email
+
+    def clean_contact_number(self):
+        contact_number = self.cleaned_data.get('contact_number')
+        if Customer.objects.filter(contact_number=contact_number).exclude(pk=self.instance.pk).exists():
+            raise ValidationError(f"This contact number already exists with Customer ID: {Customer.objects.get(contact_number=contact_number).customer_id}")
+        return contact_number
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        if Customer.objects.filter(name=name).exclude(pk=self.instance.pk).exists():
+            raise ValidationError(f"This name already exists with Customer ID: {Customer.objects.get(name=name).customer_id}")
+        return name
 
 class RoleForm(forms.ModelForm):
     class Meta:

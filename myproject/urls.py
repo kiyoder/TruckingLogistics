@@ -46,6 +46,8 @@ urlpatterns = [
     path('bookings/create/', views.booking_create, name='booking_create'),
     path('bookings/update/<int:pk>/', views.booking_update, name='booking_update'),
     path('bookings/delete/<int:pk>/', views.booking_delete, name='booking_delete'),
+    path('bookings/confirm/<int:pk>/', views.booking_confirm, name='booking_confirm'),  # Add this line
+    path('bookings/cancel/<int:pk>/', views.booking_cancel, name='booking_cancel'),  # Ensure cancel is also consistent
 
     # Container URLs
     path('containers/', views.container_list, name='container_list'),
