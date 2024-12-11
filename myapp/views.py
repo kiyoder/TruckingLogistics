@@ -167,17 +167,22 @@ def booking_create(request):
 
     return render(request, 'booking/booking_form.html', {'form': form})
 
+# views.py
 def booking_update(request, pk):
     booking = Booking.objects.get(pk=pk)
     if request.method == 'POST':
         form = BookingForm(request.POST, instance=booking)
         if form.is_valid():
-            form.save()
+            booking = form.save(commit=False)
+            booking.status = form.cleaned_data['status']
+            booking.save()
             return redirect('booking_list')
     else:
-        # Pass the booking instance to the form
         form = BookingForm(instance=booking)
+
     return render(request, 'booking/booking_form.html', {'form': form})
+
+
 def booking_delete(request, pk):
     #booking = Booking.objects.get(booking_id=pk)
     booking = Booking.objects.get(id=pk) #updated
