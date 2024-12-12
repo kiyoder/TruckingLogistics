@@ -40,21 +40,6 @@ class UserForm(forms.ModelForm):
 from django import forms
 from .models import Booking
 
-# class BookingForm(forms.ModelForm):
-#     class Meta:
-#         model = Booking
-#         fields = ['customer', 'origin', 'destination', 'status']  # Exclude 'booking_number'
-#
-#     def __init__(self, *args, **kwargs):
-#         super(BookingForm, self).__init__(*args, **kwargs)
-#         # Add a custom read-only booking_number field if the instance exists
-#         if self.instance and self.instance.pk:
-#             self.fields['booking_number_display'] = forms.CharField(
-#                 initial=self.instance.booking_number,
-#                 label="Booking Number",
-#                 required=False,
-#                 widget=forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'})
-#             )
 
 class BookingForm(forms.ModelForm):
     booking_number = forms.CharField(

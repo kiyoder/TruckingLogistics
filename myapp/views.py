@@ -343,9 +343,10 @@ def driver_form(request, pk=None):
     return render(request, 'driver/driver_form.html', {'form': form})
 
 #User Authentication
+from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from .forms import CustomUserCreationForm
 from django.contrib import messages
+from .forms import CustomUserCreationForm
 
 def register(request):
     if request.method == "POST":
@@ -353,10 +354,17 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('login')  # Redirect to home or dashboard
+            messages.success(request, "Account created successfully!")
+            return redirect('login')
+        else:
+            # Add validation errors to messages
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/register.html', {'form': form})
+
 
 from django.contrib.auth.views import LoginView
 
@@ -371,4 +379,26 @@ class CustomLoginView(LoginView):
     def form_invalid(self, form):
         messages.error(self.request, "Invalid username or password. Please try again.")
         return super().form_invalid(form)
+
+from django.http import JsonResponse
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+def validate_username(request):
+    username = request.GET.get('value', '').strip()
+    if not username:
+        return JsonResponse({'valid': False, 'message': 'Username cannot be empty.'})
+    if User.objects.filter(username=username).exists():
+        return JsonResponse({'valid': False, 'message': 'Username is already taken.'})
+    return JsonResponse({'valid': True, 'message': 'Username is available.'})
+
+def validate_email(request):
+    email = request.GET.get('value', '').strip()
+    if not email:
+        return JsonResponse({'valid': False, 'message': 'Email cannot be empty.'})
+    if User.objects.filter(email=email).exists():
+        return JsonResponse({'valid': False, 'message': 'Email is already registered.'})
+    return JsonResponse({'valid': True, 'message': 'Email is available.'})
+
 
