@@ -2,177 +2,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booking Form</title>
-  <style>
-    /* Basic Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if booking.pk %}Edit Booking{% else %}Add Booking{% endif %}</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-    body {
-      display: flex;
-      min-height: 100vh;
-      background-color: #f8f9fa;
-      color: #333;
-    }
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            color: #333;
+        }
 
-    
+        /* Main Content */
+        .content {
+            margin-left: 270px;
+            width: calc(100% - 270px);
+            padding: 40px;
+        }
 
-    /* Main Content */
-    .content {
-      margin-left: 270px;
-      width: calc(100% - 270px);
-      padding: 40px;
-    }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
+        .header h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+        }
 
-    .header h2 {
-      font-size: 24px;
-      color: #1e3a8a;
-    }
+        /* Button Styling */
+        .btn {
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease, transform 0.2s;
+            cursor: pointer;
+        }
 
-    .btn {
-      text-decoration: none;
-      padding: 10px 15px;
-      border-radius: 4px;
-      color: #ffffff;
-      font-size: 14px;
-      font-weight: bold;
-      transition: background-color 0.3s;
-    }
+        .btn-back {
+            background-color: #1e3a8a;
+        }
 
-    .btn-success {
-      background-color: #1a237e;
-    }
+        .btn-back:hover {
+            background-color: #162d7d;
+            transform: translateY(-2px);
+        }
 
-    .btn-success:hover {
-      background-color: #1a237e;
-    }
+        .btn-submit-green {
+            background-color: #4caf50;
+        }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+        .btn-submit-green:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
 
-    .form-group label {
-      font-weight: 600;
-    }
+        .btn-submit-blue {
+            background-color: #1e90ff;
+        }
 
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+        .btn-submit-blue:hover {
+            background-color: #1c7cd6;
+            transform: translateY(-2px);
+        }
 
-    .form-group input:focus,
-    .form-group select:focus {
-      border-color: #1e3a8a;
-    }
-    
-    .form-group button {
-      background-color: #007bff;
-      border: none;
-      padding: 10px 20px;
-      color: white;
-      font-size: 16px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-    .form-group button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #1e3a8a;
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 100px;
+        }
+    </style>
 </head>
 <body>
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <img src="{% static 'images/logo.png' %}" alt="Logo">
-    <a href="#"><span class="icon">🏠</span> Dashboard</a>
-    <a href="{% url 'customer_list' %}"><span class="icon">👤</span> Customer Hub</a>
-    <a href="{% url 'booking_list' %}" class="active"><span class="icon">📦</span> Booking Hub</a>
-    <a href="{% url 'container_list' %}"><span class="icon">🚛</span> Container Hub</a>
-    <a href="{% url 'driver_list' %}"><span class="icon">👥</span> Driver</a>
-    <a href="{% url 'user_list' %}"><span class="icon">👤</span> User Hub</a>
-    <a href="#"><span class="icon">🔔</span> Notification</a>
-    <div class="bottom-links">
-      <a href="#"><span class="icon">⚙️</span> Settings</a>
-      <a href="#"><span class="icon">🚪</span> Logout</a>
-    </div>
-  </div>
+{% include 'includes/sidebar.html' %}
 
-  <!-- Main Content -->
-  <div class="content">
+<div class="content">
     <div class="header">
-      <h2>Booking Form</h2>
-      <a href="{% url 'booking_list' %}" class="btn btn-success">Back to Booking Hub</a>
+        <h2>{% if booking.pk %}Edit Booking{% else %}Add Booking{% endif %}</h2>
+        <a href="{% url 'booking_list' %}" class="btn btn-back">
+            <span>&larr;</span> Back to Booking Hub
+        </a>
     </div>
 
     <div class="card">
-      <div class="card-body">
-        <form method="POST" class="form-horizontal">
-          {% csrf_token %}
-            {% if form.errors %}
-                <div class="alert alert-danger">
-                    <ul>
-                        {% for field, errors in form.errors.items %}
-                            <li>{{ field|capfirst }}: {{ errors|join:", " }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-
+        <form method="POST" action="{% if booking.pk %}{% url 'booking_update' booking.pk %}{% else %}{% url 'booking_create' %}{% endif %}">
+            {% csrf_token %}
             <div class="form-group">
-              <label for="id_booking_number">Booking Number</label>
-              {% if form.instance.pk %}
-                  <!-- Show booking number when editing -->
-                  <input type="text" disabled="true" id="id_booking_number" name="booking_number" value="{{ form.instance.booking_number }}" readonly class="form-control">
-              {% else %}
-                  <!-- Show placeholder or leave empty when adding -->
-                  <input type="text" disabled="true" id="id_booking_number" name="booking_number" value="Will be auto-generated" readonly class="form-control">
-              {% endif %}
-          </div>    
+                <label for="id_booking_number">Booking Number</label>
+                {% if booking.pk %}
+                    <input type="text" id="id_booking_number" value="{{ booking.booking_number }}" readonly>
+                {% else %}
+                    <input type="text" id="id_booking_number" value="Will be auto-generated" readonly>
+                {% endif %}
+            </div>
             <div class="form-group">
                 <label for="id_created_by">Created by</label>
-                <input type="text" disabled="true" id="id_created_by" value="{{ request.user.username }}" readonly class="form-control" />
+                <input type="text" id="id_created_by" value="{{ request.user.username }}" readonly>
             </div>
-          <div class="form-group">
-            <label for="id_customer">Customer</label>
-            {{ form.customer }}
-          </div>
-          <div class="form-group">
-            <label for="id_origin">Origin</label>
-            {{ form.origin }}
-          </div>
-          <div class="form-group">
-            <label for="id_destination">Destination</label>
-            {{ form.destination }}
-          </div>
-          {% if form.status %}
-          <div class="form-group">
-              <label for="id_status">Status</label>
-              {{ form.status }}
-          </div>
-          {% endif %}         qqqqqqqq
-          <div class="form-group">
-            <button type="submit">Save</button>
-          </div>
+            <div class="form-group">
+                <label for="id_customer">Customer</label>
+                {{ form.customer }}
+            </div>
+            <div class="form-group">
+                <label for="id_origin">Origin</label>
+                {{ form.origin }}
+            </div>
+            <div class="form-group">
+                <label for="id_destination">Destination</label>
+                {{ form.destination }}
+            </div>
+            {% if form.fields.status %}
+                <div class="form-group">
+                    <label for="id_status">Status</label>
+                    {{ form.status }}
+                </div>
+            {% endif %}
+            <button type="submit" class="btn {% if booking.pk %}btn-submit-green{% else %}btn-submit-blue{% endif %}">
+                {% if booking.pk %}Save Changes{% else %}Create Booking{% endif %}
+            </button>
         </form>
-      </div>
     </div>
-  </div>
+</div>
 </body>
 </html>

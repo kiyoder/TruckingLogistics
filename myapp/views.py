@@ -89,7 +89,7 @@ def customer_delete(request, pk):
     if request.method == 'POST':
         customer.delete()
         return redirect('customer_list')
-    
+
     return render(request, 'customers/customer_confirm_delete.html', {'customer': customer})
 
 #USER
@@ -169,18 +169,17 @@ def booking_create(request):
 
 # views.py
 def booking_update(request, pk):
-    booking = Booking.objects.get(pk=pk)
+    # Fetch the existing booking object
+    booking = get_object_or_404(Booking, pk=pk)
     if request.method == 'POST':
-        form = BookingForm(request.POST, instance=booking)
+        form = BookingForm(request.POST, instance=booking)  # Pass instance to update
         if form.is_valid():
-            booking = form.save(commit=False)
-            booking.status = form.cleaned_data['status']
-            booking.save()
+            form.save()  # Save the updated instance
             return redirect('booking_list')
     else:
-        form = BookingForm(instance=booking)
+        form = BookingForm(instance=booking)  # Pass instance for pre-filled form
 
-    return render(request, 'booking/booking_form.html', {'form': form})
+    return render(request, 'booking/booking_form.html', {'form': form, 'booking': booking})
 
 
 def booking_delete(request, pk):
@@ -287,7 +286,7 @@ def driver_create(request):
     bookings = Booking.objects.all()
     customers = Customer.objects.all()
     containers = Container.objects.all()
-    
+
     if request.method == 'POST':
         form = DriverForm(request.POST)
         if form.is_valid():
@@ -331,7 +330,7 @@ def driver_form(request, pk=None):
         driver = get_object_or_404(Driver, pk=pk)
     else:
         driver = None
-    
+
     if request.method == 'POST':
         form = DriverForm(request.POST, instance=driver)
         if form.is_valid():
@@ -339,7 +338,7 @@ def driver_form(request, pk=None):
             return redirect('driver_list')  # Redirect to the driver list after saving
     else:
         form = DriverForm(instance=driver)
-    
+
     return render(request, 'driver/driver_form.html', {'form': form})
 
 #User Authentication
@@ -402,3 +401,16 @@ def validate_email(request):
     return JsonResponse({'valid': True, 'message': 'Email is available.'})
 
 
+from django.contrib.auth import logout
+from django.contrib import messages
+from django.shortcuts import redirect
+
+def logout_view(request):
+    """Logs out the user and clears any remaining messages."""
+    logout(request)
+    for key in list(request.session.keys()):
+        if key.startswith('_'):  # Preserve Django's session integrity
+            continue
+        del request.session[key]
+    messages.success(request, "You have been logged out successfully.")
+    return redirect('login')
