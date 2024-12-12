@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator
 
 # Create your models here.
 
@@ -68,16 +69,26 @@ class Booking(models.Model):
             else:
                 self.booking_number = f"{current_year}-00001"
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.booking_number  # Display the booking_number as a string
     
 class Container(models.Model):
+
+    SIZE_CHOICES = [
+        (10, '10'),
+        (20, '20'),
+        (30, '30'),
+        (40, '40'),
+        (50, '50'),
+    ]
+
     container_id = models.AutoField(primary_key=True)
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
-    size = models.IntegerField()
-    weight = models.DecimalField(max_digits=10, decimal_places=2)
+    size = models.IntegerField(choices=SIZE_CHOICES)
+    weight = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     contents = models.TextField()
     status = models.CharField(max_length=255)
-    delivered_at = models.DateTimeField(null=True, blank=True)
-    received_by = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"Container {self.container_id} for Booking {self.booking}"
@@ -89,8 +100,6 @@ class ContainerStatus(models.Model):
     status = models.CharField(max_length=255)
     recipient_name = models.CharField(max_length=255)
     digital_signature = models.BinaryField()
-    updated_at = models.DateTimeField(auto_now=True)
-    received_by = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"Status {self.status_id} for Container {self.container}"

@@ -93,29 +93,37 @@ class BookingForm(forms.ModelForm):
         return customer
 
 class ContainerForm(forms.ModelForm):
-    booking_number = forms.ModelChoiceField(
-        queryset=Booking.objects.all(),  # Fetch all bookings
-        empty_label="Select a Booking",  # Optional placeholder
-        label="Booking",
-        widget=forms.Select(attrs={'class': 'form-control'})
-    )
-
     class Meta:
         model = Container
-        fields = '__all__'
+        fields = '__all__'  # Include all fields by default
+        widgets = {
+            'booking': forms.Select(attrs={'class': 'form-control'}),
+            'size': forms.Select(attrs={'class': 'form-control'}),
+            'weight': forms.NumberInput(attrs={'class': 'form-control'}),
+            'contents': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'cols': 252, }),
+        }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.instance.pk:  # Check if this is a new instance
+            self.fields.pop('status')  # Remove the status field for new containers
+            
+    def clean_weight(self):
+        weight = self.cleaned_data.get('weight')
+        if weight < 0:
+            raise forms.ValidationError("Weight cannot be negative.")
+        return weight
+            
 class ContainerStatusForm(forms.ModelForm):
     class Meta:
         model = Container
-        fields = ['booking', 'size', 'weight', 'contents', 'status', 'delivered_at', 'received_by']
+        fields = ['booking', 'size', 'weight', 'contents', 'status']
         widgets = {
             'booking': forms.Select(attrs={'class': 'form-control'}),
             'size': forms.TextInput(attrs={'class': 'form-control'}),
             'weight': forms.TextInput(attrs={'class': 'form-control'}),
             'contents': forms.Textarea(attrs={'class': 'form-control'}),
             'status': forms.TextInput(attrs={'class': 'form-control'}),
-            'delivered_at': forms.TextInput(attrs={'class': 'form-control'}),
-            'received_by': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 class DriverForm(forms.ModelForm):

@@ -216,11 +216,14 @@ def container_create(request):
     if request.method == 'POST':
         form = ContainerForm(request.POST)
         if form.is_valid():
-            form.save()  # Save the form data
-            return redirect('container_list')  # Redirect after successful save
+            container = form.save(commit=False)
+            container.status = "Pending"  # Set default status explicitly
+            container.save()
+            return redirect('container_list')
     else:
-        form = ContainerForm()  # If it's a GET request, show an empty form
+        form = ContainerForm()
     return render(request, 'container/container_form.html', {'form': form})
+
 
 def container_update(request, pk):
     container = Container.objects.get(container_id=pk)
