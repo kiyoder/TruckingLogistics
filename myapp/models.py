@@ -89,6 +89,7 @@ class Container(models.Model):
     weight = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     contents = models.TextField()
     status = models.CharField(max_length=255)
+    driver = models.ForeignKey('Driver', on_delete=models.SET_NULL, null=True, blank=True)  # New field added
 
     def __str__(self):
         return f"Container {self.container_id} for Booking {self.booking}"
@@ -107,11 +108,14 @@ class ContainerStatus(models.Model):
 class Driver(models.Model):
     driver_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, default='Unknown')
-    
-    # Foreign Keys to other models
-    booking = models.ForeignKey('Booking', on_delete=models.SET_NULL, null=True, blank=True)
-    customer = models.ForeignKey('Customer', on_delete=models.SET_NULL, null=True, blank=True)
-    container = models.ForeignKey('Container', on_delete=models.SET_NULL, null=True, blank=True)
+    phone_number = models.CharField(max_length=15,default=' ')  # Added field
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def bookings_count(self):
+        return self.container_set.count()  # Method to count bookings assigned to this driver
 
     def __str__(self):
         return self.name

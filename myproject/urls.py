@@ -60,6 +60,7 @@ urlpatterns = [
     path('container_statuses/create/', views.container_status_create, name='container_status_create'),
     path('container_statuses/update/<int:pk>/', views.container_status_update, name='container_status_update'),
     path('container_statuses/delete/<int:pk>/', views.container_status_delete, name='container_status_delete'),
+    path('containers/assign_driver/<int:container_id>/', views.assign_driver, name='assign_driver'),
 
     # Role URLs
     path('roles/', views.role_list, name='role_list'),

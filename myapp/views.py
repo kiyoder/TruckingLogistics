@@ -283,6 +283,17 @@ def container_delete(request, pk):
         return redirect('container_list')
     return render(request, 'container/container_confirm_delete.html', {'container': container})
 
+def assign_driver(request, container_id):
+    container = get_object_or_404(Container, pk=container_id)
+    drivers = Driver.objects.all()
+    if request.method == 'POST':
+        driver_id = request.POST.get('driver_id')
+        driver = get_object_or_404(Driver, pk=driver_id)
+        container.driver = driver
+        container.save()
+        return redirect('container_list')
+    return render(request, 'container/assign_driver.html', {'container': container, 'drivers': drivers})
+
 #CONTAINER STATUS
 from .models import ContainerStatus
 from .forms import ContainerStatusForm
@@ -319,45 +330,106 @@ def container_status_delete(request, pk):
         return redirect('container_status/container_status_list')
     return render(request, 'container_status/container_status_confirm_delete.html', {'status': status})
 
+#DRIVER
 from .models import Driver
 from .forms import DriverForm
 
 def driver_create(request):
-    # Fetching the data to populate select fields
-    bookings = Booking.objects.all()
-    customers = Customer.objects.all()
-    containers = Container.objects.all()
+    # Fetching the country codes for the dropdown
+    country_codes = [
+        '+93', '+973', '+880', '+975', '+673', '+855', '+86', '+91', '+62', '+964', 
+        '+98', '+81', '+962', '+7', '+965', '+996', '+856', '+961', '+853', '+60', 
+        '+960', '+976', '+95', '+977', '+968', '+92', '+970', '+63', '+974', '+82', 
+        '+94', '+886', '+66', '+90', '+993', '+971', '+998', '+84', '+967'
+    ]
+
+    # Default selected country code (you can set this based on the driver or session if needed)
+    selected_country_code = '+91'  # Default to India, change as needed
 
     if request.method == 'POST':
-        form = DriverForm(request.POST)
-        if form.is_valid():
-            form.save()  # Save the new driver to the database
-            return redirect('/drivers/')  # Redirect directly to the list of drivers
-    else:
-        form = DriverForm()
+        # Get form data
+        country_code = request.POST.get('country_code')
+        phone_number = request.POST.get('phone_number')
+
+        # Combine country code with phone number before saving
+        full_phone_number = f"{country_code}{phone_number}"
+
+        # Save the driver object
+        driver = Driver(name=request.POST.get('name'), phone_number=full_phone_number)
+        driver.save()
+        
+        return redirect('/drivers/')  # Redirect to the list of drivers
 
     context = {
-        'form': form,
-        'bookings': bookings,
-        'customers': customers,
-        'containers': containers,
+        'country_codes': country_codes,
+        'selected_country_code': selected_country_code,
+        'driver': None  # If you want to edit an existing driver, pass the driver object here
     }
 
     return render(request, 'driver/driver_form.html', context)
 
+
+
 def driver_list(request):
     drivers = Driver.objects.all()
+    for driver in drivers:
+        # Ensure the country code includes the '+'
+        if driver.phone_number.startswith('+'):
+            split_index = driver.phone_number.find(' ')  # Find space after country code
+            if split_index != -1:
+                driver.country_code = driver.phone_number[:split_index]
+                driver.phone_number_only = driver.phone_number[split_index+1:]
+            else:
+                driver.country_code = driver.phone_number  # Handle case with no space
+                driver.phone_number_only = ""
+        else:
+            driver.country_code = ""
+            driver.phone_number_only = driver.phone_number
     return render(request, 'driver/driver_list.html', {'drivers': drivers})
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .forms import DriverForm
+from .models import Driver
+
 def driver_update(request, pk):
     driver = get_object_or_404(Driver, pk=pk)
+    
+    # Extract the current country code and phone number
+    country_code = driver.phone_number[:4]  # Assuming country code is always 4 digits
+    phone_number = driver.phone_number[4:]  # The rest is the phone number
+    
     if request.method == 'POST':
         form = DriverForm(request.POST, instance=driver)
         if form.is_valid():
-            form.save()
-            return redirect('driver_list')
+            # Combine the selected country code with the phone number
+            country_code = request.POST.get('country_code')
+            phone_number = request.POST.get('phone_number')
+            driver.phone_number = f"{country_code}{phone_number}"
+            driver.save()  # Save the driver with the new phone number format
+            return redirect('driver_list')  # Redirect to the list of drivers
     else:
         form = DriverForm(instance=driver)
-    return render(request, 'driver/driver_form.html', {'form': form, 'driver': driver})
+
+    # Prepare country code selections
+    country_codes = ["+93", "+973", "+880", "+975", "+673", "+855", "+86", "+91", "+62", "+964",
+                     "+98", "+81", "+962", "+7", "+965", "+996", "+856", "+961", "+853", "+60",
+                     "+960", "+976", "+95", "+977", "+968", "+92", "+970", "+63", "+974", "+82",
+                     "+94", "+886", "+66", "+90", "+993", "+971", "+998", "+84", "+967"]
+    
+    # Pass the required context to the template
+    return render(request, 'driver/driver_form.html', {
+        'form': form,
+        'driver': driver,
+        'country_codes': country_codes,
+        'selected_country_code': country_code,
+        'phone_number': phone_number,
+    })
+
+
+
+
 
 def driver_delete(request, pk):
     driver = get_object_or_404(Driver, pk=pk)

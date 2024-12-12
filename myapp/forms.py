@@ -80,19 +80,13 @@ class BookingForm(forms.ModelForm):
 class ContainerForm(forms.ModelForm):
     class Meta:
         model = Container
-        fields = '__all__'  # Include all fields by default
-        widgets = {
-            'booking': forms.Select(attrs={'class': 'form-control'}),
-            'size': forms.Select(attrs={'class': 'form-control'}),
-            'weight': forms.NumberInput(attrs={'class': 'form-control'}),
-            'contents': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'cols': 252, }),
-        }
+        fields = ['booking', 'size', 'weight', 'contents', 'driver']  # Include driver field
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if not self.instance.pk:  # Check if this is a new instance
-            self.fields.pop('status')  # Remove the status field for new containers
-            
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+
     def clean_weight(self):
         weight = self.cleaned_data.get('weight')
         if weight < 0:
@@ -112,16 +106,64 @@ class ContainerStatusForm(forms.ModelForm):
         }
 
 class DriverForm(forms.ModelForm):
+    COUNTRY_CODES = [
+        ('+93', '+93'),
+        ('+973', '+973'),
+        ('+880', '+880'),
+        ('+975', '+975'),
+        ('+673', '+673'),
+        ('+855', '+855'),
+        ('+86', '+86'),
+        ('+91', '+91'),
+        ('+62', '+62'),
+        ('+964', '+964'),
+        ('+98', '+98'),
+        ('+81', '+81'),
+        ('+962', '+962'),
+        ('+7', '+7'),
+        ('+965', '+965'),
+        ('+996', '+996'),
+        ('+856', '+856'),
+        ('+961', '+961'),
+        ('+853', '+853'),
+        ('+60', '+60'),
+        ('+960', '+960'),
+        ('+976', '+976'),
+        ('+95', '+95'),
+        ('+977', '+977'),
+        ('+968', '+968'),
+        ('+92', '+92'),
+        ('+970', '+970'),
+        ('+63', '+63'),
+        ('+974', '+974'),
+        ('+82', '+82'),
+        ('+94', '+94'),
+        ('+886', '+886'),
+        ('+66', '+66'),
+        ('+90', '+90'),
+        ('+993', '+993'),
+        ('+971', '+971'),
+        ('+998', '+998'),
+        ('+84', '+84'),
+        ('+967', '+967'),
+    ]
+
+    country_code = forms.ChoiceField(
+        choices=COUNTRY_CODES, 
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label="Country Code",
+        required=True
+    )
+
     class Meta:
         model = Driver
-        fields = ['name', 'booking', 'customer', 'container']  # Include the necessary fields
+        fields = ['name', 'phone_number']  # Only name and phone number fields
 
-    # If needed, you can add custom widgets or validation for the ForeignKey fields
-    booking = forms.ModelChoiceField(queryset=Booking.objects.all(), required=True)
-    customer = forms.ModelChoiceField(queryset=Customer.objects.all(), required=True)
-    container = forms.ModelChoiceField(queryset=Container.objects.all(), required=True)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
 
-    # If you want to customize the form further, you can add widgets or validation rules
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:

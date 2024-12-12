@@ -124,11 +124,16 @@
       outline: none;
     }
 
+    .form-container input.gray-text, .form-container select.gray-text {
+      color: gray;
+    }
+
     .form-container button {
       background-color: #1e3a8a;
       color: #ffffff;
       padding: 12px;
       font-size: 16px;
+      max-width: 100px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
@@ -166,6 +171,28 @@
     }
 
   </style>
+  <script>
+    function validatePhoneNumber(input) {
+      const maxChars = 10;
+      if (input.value.length > maxChars) {
+        input.value = input.value.slice(0, maxChars);
+      }
+    }
+
+    function clearDefaultValue(element, defaultValue) {
+      if (element.value === defaultValue) {
+        element.value = '';
+        element.style.color = 'black';
+      }
+    }
+
+    function restoreDefaultValue(element, defaultValue) {
+      if (element.value === '') {
+        element.value = defaultValue;
+        element.style.color = 'gray';
+      }
+    }
+  </script>
 </head>
 <body>
   <div class="sidebar">
@@ -195,20 +222,29 @@
         
         <!-- Form Fields -->
         <label for="name">Driver Name</label>
-        {{ form.name }}
-        
-        <label for="container">Container</label>
-        {{ form.container }}
-        
-        <label for="booking">Booking</label>
-        {{ form.booking }}
-
-        <label for="custoemr">Customer</label>
-        {{ form.customer }}
-        
+        <input type="text" name="name" id="id_name" class="gray-text" style="padding: 12px; border-radius: 4px; border: 1px solid #ccc; width: 100%; max-width: 215px;" 
+               value="{{ driver.name }}" onfocus="clearDefaultValue(this, '{{ driver.name }}')" onblur="restoreDefaultValue(this, '{{ driver.name }}')">
+      
+        <label for="phone_number">Phone Number</label>
+        <div style="display: flex; gap: 10px;">
+          <select name="country_code" class="gray-text" required style="padding: 12px; border-radius: 4px; border: 1px solid #ccc; width: 90px;">
+            {% for code in country_codes %}
+              <option value="{{ code }}" {% if code == selected_country_code %}selected{% endif %}>{{ code }}</option>
+            {% endfor %}
+          </select>
+          <input type="tel" name="phone_number" maxlength="10" class="gray-text"
+                 value="{{ phone_number }}" 
+                 oninput="validatePhoneNumber(this)" 
+                 onfocus="clearDefaultValue(this, '{{ phone_number }}')" 
+                 onblur="restoreDefaultValue(this, '{{ phone_number }}')"
+                 required style="flex-grow: 1; max-width: 115px;" />
+        </div>                        
+      
         <button type="submit">Submit</button>
       </form>
     </div>
   </div>
 </body>
 </html>
+
+            
