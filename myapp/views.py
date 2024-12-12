@@ -96,9 +96,22 @@ def customer_delete(request, pk):
 from .models import User
 from .forms import UserForm
 
+from .models import CustomUser
+
+from .models import CustomUser
+
 def user_list(request):
-    users = User.objects.all()
-    return render(request, 'user/user_list.html', {'users': users})
+    users = CustomUser.objects.all()
+    users_by_role = {}
+
+    for user in users:
+        # Use the role directly, assuming it's a string field
+        role = user.role if user.role else "Unassigned Role"
+        if role not in users_by_role:
+            users_by_role[role] = []
+        users_by_role[role].append(user)
+
+    return render(request, 'user/user_list.html', {'users_by_role': users_by_role})
 
 def user_create(request):
     if request.method == 'POST':
@@ -110,23 +123,51 @@ def user_create(request):
         form = UserForm()
     return render(request, 'user/user_form.html', {'form': form})
 
+from django.shortcuts import get_object_or_404
+from .forms import UserForm
+from .models import CustomUser
+
 def user_update(request, pk):
-    user = User.objects.get(user_id=pk)
+    user = get_object_or_404(CustomUser, pk=pk)  # Fetch the user object
     if request.method == 'POST':
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
+            # Save the role explicitly since it's handled in the form
+            user.role = request.POST.get('role')  # Get the selected role
             form.save()
-            return redirect('user_list')
+            messages.success(request, "User updated successfully.")
+            return redirect('user_list')  # Redirect to user list after saving
+        else:
+            messages.error(request, "Error updating user. Please check the form.")
     else:
-        form = UserForm(instance=user)
-    return render(request, 'user/user_form.html', {'form': form})
+        form = UserForm(instance=user)  # Pre-fill the form with the existing data
+    return render(request, 'user/user_form.html', {'form': form, 'user': user})
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from .models import CustomUser
 
 def user_delete(request, pk):
-    user = get_object_or_404(User, user_id=pk)
+    user = get_object_or_404(CustomUser, id=pk)  # Use 'id' instead of 'user_id'
     if request.method == 'POST':
         user.delete()
-        return redirect('user_list')
+        messages.success(request, "User deleted successfully.")
+        return redirect('user_list')  # Redirect to the user list after deletion
     return render(request, 'user/user_confirm_delete.html', {'user': user})
+
+from django import forms
+from .models import CustomUser
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser  # Use your custom user model
+        fields = ['username', 'email', 'role']  # Ensure 'role' is included
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'role': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 #BOOKINGS
 

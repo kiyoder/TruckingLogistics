@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Form</title>
+    <title>Edit User</title>
     <style>
         /* Basic Reset */
         * {
@@ -17,184 +17,125 @@
         body {
             display: flex;
             min-height: 100vh;
-            background-color: #f9fafb;
-            font-size: 16px;
-            color: #4a4a4a;
-        }
-
-        /* Sidebar Styling */
-        .sidebar {
-            width: 250px;
-            background-color: #f3f4f6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20px;
-            height: 100vh;
-            position: fixed;
-            left: 0;
-        }
-
-        .sidebar img {
-            width: 100px;
-            margin-bottom: 20px;
-            border-radius: 50%;
-        }
-
-        .sidebar a {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            padding: 15px;
-            text-decoration: none;
+            background-color: #f8f9fa;
             color: #333;
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .sidebar a.active, .sidebar a:hover {
-            background-color: #e0e7ff;
-            color: #1e3a8a;
-        }
-
-        .sidebar .icon {
-            margin-right: 10px;
-        }
-
-        .sidebar .bottom-links {
-            margin-top: auto;
-            margin-bottom: 20px;
         }
 
         /* Main Content */
         .content {
             margin-left: 270px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
+            width: calc(100% - 270px);
             padding: 40px;
         }
 
-        .form-container {
-            width: 100%;
-            max-width: 450px;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            font-size: 28px;
-            margin-bottom: 15px;
-            color: #111827;
-            font-weight: 600;
-        }
-
-        h2 {
-            font-size: 22px;
-            margin-bottom: 20px;
-            color: #4c51bf;
-            font-weight: 600;
-        }
-
-        form {
+        .header {
             display: flex;
-            flex-direction: column;
-            gap: 20px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            background-color: #f9fafb;
-            transition: border-color 0.3s ease;
+        .header h2 {
+            font-size: 24px;
+            color: #1e3a8a;
         }
 
-        input:focus, select:focus, textarea:focus {
-            border-color: #4c51bf;
-            outline: none;
-        }
-
-        button {
-            background-color: #4c51bf;
-            color: white;
-            font-size: 16px;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #3b4db2;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 15px;
+        .btn {
             text-decoration: none;
-            color: #4c51bf;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease, transform 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-back {
+            background-color: #1e3a8a;
+        }
+
+        .btn-back:hover {
+            background-color: #162d7d;
+            transform: translateY(-2px);
+        }
+
+        .btn-submit {
+            background-color: #4caf50;
+        }
+
+        .btn-submit:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
             font-size: 16px;
-            transition: color 0.3s ease;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
 
-        .back-link:hover {
-            color: #2c3e8c;
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 200px;
-            }
-
-            .content {
-                margin-left: 220px;
-            }
-
-            .form-container {
-                max-width: 100%;
-                padding: 20px;
-            }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #1e3a8a;
+            outline: none;
         }
     </style>
 </head>
 <body>
+{% include 'includes/sidebar.html' %}
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <img src="{% static 'images/logo.png' %}" alt="Logo">
-        <a href="#"><span class="icon">🏠</span> Dashboard</a>
-        <a href="{% url 'customer_list' %}"><span class="icon">👤</span> Customer Hub</a>
-        <a href="{% url 'booking_list' %}"><span class="icon">📦</span> Booking Hub</a>
-        <a href="{% url 'container_list' %}"><span class="icon">🚛</span> Container Hub</a>
-        <a href="{% url 'driver_list' %}"><span class="icon">👥</span> Driver</a>
-        <a href="{% url 'user_list' %}" class="active"><span class="icon">👤</span> User Hub</a>
-        <a href="#"><span class="icon">🔔</span> Notification</a>
-        <div class="bottom-links">
-            <a href="#"><span class="icon">⚙️</span> Settings</a>
-            <a href="#"><span class="icon">🚪</span> Logout</a>
-        </div>
+<div class="content">
+    <div class="header">
+        <h2>Edit User</h2>
+        <a href="{% url 'user_list' %}" class="btn btn-back">
+            <span>&larr;</span> Back to User List
+        </a>
     </div>
 
-    <!-- Main Content -->
-    <div class="content">
-        <div class="form-container">
-            <h1>User Management</h1>
-            <h2>User Form</h2>
-            <form method="POST" action="{% url 'user_create' %}">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Save</button>
-            </form>
-            <a href="{% url 'user_list' %}" class="back-link">Back to User List</a>
-        </div>
+    <div class="card">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                {{ form.username }}
+            </div>
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                {{ form.email }}
+            </div>
+            <div class="form-group">
+                <label for="id_role">Role</label>
+                <select name="role" id="id_role" class="form-control">
+                    <option value="office" {% if user.role == "office" %}selected{% endif %}>Office</option>
+                    <option value="customer" {% if user.role == "customer" %}selected{% endif %}>Customer</option>
+                    <option value="driver" {% if user.role == "driver" %}selected{% endif %}>Driver</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-submit">Save Changes</button>
+        </form>
     </div>
-
+</div>
 </body>
 </html>
