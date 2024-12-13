@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator
 
 # Create your models here.
 from django.conf import settings
+from django.conf import settings
 
 class Customer(models.Model):
     customer_id = models.AutoField(primary_key=True)
@@ -12,6 +13,16 @@ class Customer(models.Model):
     email = models.EmailField(max_length=100)
     address = models.TextField()
     company_name = models.CharField(max_length=100)
+
+    assigned_user = models.ForeignKey(
+            settings.AUTH_USER_MODEL,
+            on_delete=models.SET_NULL,
+            null=True,
+            blank=True,
+            related_name='assigned_customers'
+    )
+
+
 
     assigned_user = models.ForeignKey(
             settings.AUTH_USER_MODEL,
@@ -121,10 +132,6 @@ class Container(models.Model):
     def __str__(self):
         return f"Container {self.container_id} for Booking {self.booking}"
 
-
-
-
-
     
 class ContainerStatus(models.Model):
     status_id = models.AutoField(primary_key=True)
@@ -144,6 +151,7 @@ class Driver(models.Model):
 
     booking = models.ForeignKey('Booking', on_delete=models.SET_NULL, null=True, blank=True)
     customer = models.ForeignKey('Customer', on_delete=models.SET_NULL, null=True, blank=True)
+    container = models.ForeignKey('Container', on_delete=models.SET_NULL, null=True, blank=True, related_name='driver_assignments')
     container = models.ForeignKey('Container', on_delete=models.SET_NULL, null=True, blank=True, related_name='driver_assignments')
 
     def __str__(self):

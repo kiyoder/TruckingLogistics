@@ -13,6 +13,17 @@
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Container Management</title>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
         body {
             display: flex;
@@ -51,6 +62,12 @@
             align-items: center;
             margin-bottom: 20px;
         }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
         .header h2 {
             font-size: 24px;
@@ -61,7 +78,132 @@
         .profile-menu {
             position: relative;
         }
+        .header h2 {
+            font-size: 24px;
+            color: #111827;
+        }
 
+
+        .profile-menu {
+            position: relative;
+        }
+
+        .profile-button {
+            background-color: #1e3a8a;
+            color: white;
+            font-size: 16px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 150px;
+            max-width: 100%;
+            justify-content: space-between;
+            width: auto;
+        }
+
+        .profile-button:hover {
+            background-color: #162d7d;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-icon {
+            width: 24px;
+            height: 24px;
+            background: url("{% static 'images/profile_icon.png' %}") no-repeat center center;
+            background-size: contain;
+        }
+
+        .profile-username {
+            flex-grow: 1;
+            text-align: center;
+            font-weight: 500;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 60px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            min-width: 150px;
+            width: 100%;
+        }
+
+        .profile-dropdown form button {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            width: 100%;
+            font-size: 14px;
+            color: #333;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            gap: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .profile-dropdown form button:hover {
+            background-color: #f1f5f9;
+        }
+
+        .profile-menu:hover .profile-dropdown,
+        .profile-menu:focus-within .profile-dropdown {
+            display: block;
+        }
+
+
+        .table-container {
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            overflow-x: auto;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #1e3a8a;
+            color: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        td.actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-start;
+        }
         .profile-button {
             background-color: #1e3a8a;
             color: white;
@@ -191,6 +333,20 @@
             transition: background-color 0.3s ease, transform 0.2s;
         }
 
+        .btn-edit, .btn-delete, .btn-assign {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        .btn-edit {
+            background-color: #4caf50;
+        }
         .btn-edit {
             background-color: #4caf50;
         }
@@ -199,11 +355,63 @@
             background-color: #388e3c;
             transform: translateY(-2px);
         }
+        .btn-edit:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
 
         .btn-delete {
             background-color: #f44336;
         }
+        .btn-delete {
+            background-color: #f44336;
+        }
 
+        .btn-delete:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .btn-assign {
+            background-color: #1e90ff;
+        }
+
+        .btn-assign:hover {
+            background-color: #1c7cd6;
+            transform: translateY(-2px);
+        }
+
+
+        .add-button-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .add-button {
+            background-color: #1e3a8a;
+            color: white;
+            font-size: 16px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        .add-button span {
+            font-size: 18px;
+        }
+
+        .add-button:hover {
+            background-color: #162d7d;
+            transform: translateY(-2px);
+        }
+    </style>
         .btn-delete:hover {
             background-color: #d32f2f;
             transform: translateY(-2px);
@@ -255,6 +463,19 @@
 
 <div class="content">
     <div class="header">
+        <h2>Container Management</h2>
+        <div class="profile-menu">
+            <button class="profile-button">
+                <span class="profile-icon"></span>
+                <span class="profile-username">{{ user.username }}</span>
+            </button>
+            <div class="profile-dropdown">
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
+        </div>
         <h2>Container Management</h2>
         <div class="profile-menu">
             <button class="profile-button">
@@ -321,5 +542,7 @@
         </a>
     </div>
 </div>
+</div>
 </body>
 </html>
+

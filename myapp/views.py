@@ -99,7 +99,6 @@ from .forms import UserForm
 
 from .models import CustomUser
 
-from .models import CustomUser
 
 def user_list(request):
     users = CustomUser.objects.all()
@@ -537,6 +536,31 @@ def cancel_container(request, container_id):
     container.status = 'Cancelled'  # Update status to Cancelled
     container.save()
     return redirect('driver_dashboard')
+
+from django.shortcuts import render
+from .models import Customer, Booking, Container
+from django.http import Http404
+from .models import Customer, Container
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def customer_dashboard(request):
+    # Get the customer assigned to the logged-in user
+    customer = Customer.objects.filter(assigned_user=request.user).first()
+
+    # Check if the customer exists and is assigned
+    if not customer:
+        print(f"No customers assigned to {request.user.username}")  # Debugging line
+        raise Http404("You are not assigned to any customer.")  # Show error if no customer is assigned
+
+    containers = Container.objects.filter(booking__customer=customer)
+
+    # Pass the customer and the containers to the template
+    return render(request, 'customer_dashboard.html', {
+        'customer': customer,
+        'containers': containers,
+        'is_assigned': True  # Flag to indicate the user is assigned
+    })
 
 
 

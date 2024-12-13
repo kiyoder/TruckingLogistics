@@ -163,10 +163,13 @@ class DriverForm(forms.ModelForm):
         model = Driver
         fields = ['name', 'booking', 'customer', 'container']
 
+        fields = ['name', 'booking', 'customer', 'container']
+
 
     booking = forms.ModelChoiceField(queryset=Booking.objects.all(), required=True)
     customer = forms.ModelChoiceField(queryset=Customer.objects.all(), required=True)
     container = forms.ModelChoiceField(queryset=Container.objects.all(), required=True)
+
 
 
 

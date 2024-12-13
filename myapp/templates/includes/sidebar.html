@@ -51,10 +51,12 @@
 <div class="sidebar">
     <img src="{% static 'images/logo.png' %}" alt="Logo">
     {% if user.role == 'driver' %}
-        <a href="{% url 'driver_dashboard' %}"><span class="icon">🏠</span>Dashboard</a>
-        {% else %}
+        <a href="{% url 'driver_dashboard' %}"><span class="icon">🏠</span>Driver Dashboard</a>
+    {% if user.role == 'customer' %}
+        <a href="{% url 'customer_dashboard' %}"><span class="icon">🏠</span>Customer Dashboard</a>
+    {% else %}
         <a href="#"><span class="icon">🏠</span> Dashboard</a>
-        {% endif %}
+    {% endif %}
     <a href="{% url 'customer_list' %}" class="{% if request.resolver_match.url_name == 'customer_list' %}active{% endif %}">
         <span class="icon">👤</span> Customer Hub
     </a>

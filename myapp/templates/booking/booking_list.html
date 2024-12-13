@@ -350,5 +350,13 @@
         }
     }
 </script>
-</div>
 
+<script>
+    function confirmConfirm(bookingId) {
+        if (confirm("Are you sure you want to confirm this booking?")) {
+            window.location.href = `/bookings/confirm/${bookingId}/`;
+        }
+    }
+</script>
+</body>
+</html>
