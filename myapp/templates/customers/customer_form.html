@@ -2,275 +2,239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer Form</title>
-  <style>
-    /* Basic Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if customer.pk %}Edit Customer{% else %}Add Customer{% endif %}</title>
+    <style>
 
-    body {
-      display: flex;
-      min-height: 100vh;
-      background-color: #f8f9fa;
-      color: #333;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-    /* Sidebar styling */
-    .sidebar {
-      width: 250px;
-      background-color: #f3f4f6;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 20px;
-      height: 100vh;
-      position: fixed;
-      left: 0;
-    }
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
 
-    .sidebar img {
-      width: 100px;
-      margin-bottom: 20px;
-      border-radius: 50%;
-    }
+        .content {
+            margin-left: 270px;
+            width: calc(100% - 270px);
+            padding: 40px;
+        }
 
-    .sidebar a {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      padding: 15px;
-      text-decoration: none;
-      color: #333;
-      font-size: 16px;
-      font-weight: 500;
-    }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-    .sidebar a.active, .sidebar a:hover {
-      background-color: #e0e7ff;
-      color: #1e3a8a;
-    }
+        .header h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+        }
 
-    .sidebar .icon {
-      margin-right: 10px;
-    }
 
-    .sidebar .bottom-links {
-      margin-top: auto;
-      margin-bottom: 20px;
-    }
+        .btn {
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease, transform 0.2s;
+            cursor: pointer;
+        }
 
-    /* Main Content */
-    .content {
-      margin-left: 270px;
-      width: calc(100% - 270px);
-      padding: 40px;
-    }
+        .btn-back {
+            background-color: #1e3a8a;
+        }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
+        .btn-back:hover {
+            background-color: #162d7d;
+            transform: translateY(-2px);
+        }
 
-    .header h2 {
-      font-size: 24px;
-      color: #1e3a8a;
-    }
+        .btn-submit-green {
+            background-color: #4caf50;
+        }
 
-    .btn {
-      text-decoration: none;
-      padding: 10px 15px;
-      border-radius: 4px;
-      color: #ffffff;
-      font-size: 14px;
-      font-weight: bold;
-      transition: background-color 0.3s;
-    }
+        .btn-submit-green:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
 
-    .btn-success {
-      background-color: #1a237e;
-    }
+        .btn-submit-blue {
+            background-color: #1e90ff;
+        }
 
-    .btn-success:hover {
-      background-color: #1a237e;
-    }
+        .btn-submit-blue:hover {
+            background-color: #1c7cd6;
+            transform: translateY(-2px);
+        }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-    .form-group label {
-      font-weight: 600;
-    }
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-    .form-group input {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
 
-    .form-group input:focus {
-      border-color: #1e3a8a;
-    }
-    
-    .form-group button {
-      background-color: #007bff;
-      border: none;
-      padding: 10px 20px;
-      color: white;
-      font-size: 16px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
 
-    .form-group button:hover {
-      background-color: #0056b3;
-    }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #1e3a8a;
+            outline: none;
+        }
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical; /* Allow vertical resizing */
+            height: 100px; /* Adjust this value as needed */
+        }
+        
 
-    .form-group textarea {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      resize: none;
-    }
-
-    .form-group textarea:focus {
-      border-color: #1e3a8a;
-    }
-    .modal {
-            display: none; /* Hidden by default */
-            position: fixed; 
-            z-index: 1; 
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
             left: 0;
             top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto; 
-            background-color: rgba(0, 0, 0, 0.5); 
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
         }
+
         .modal-content {
             background-color: #fefefe;
-            margin: 15% auto; 
+            margin: 15% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 50%; 
+            width: 50%;
             border-radius: 5px;
         }
+
         .close-btn {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
+
         .close-btn:hover,
         .close-btn:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
+
         ul {
             list-style-type: none;
             padding: 0;
         }
+
         ul li {
             color: red;
         }
-  </style>
-  <script>
-    function closeModal() {
-        document.getElementById("errorModal").style.display = "none";
-    }
-
-    // Automatically show the modal if errors exist
-    document.addEventListener("DOMContentLoaded", function () {
-        const modal = document.getElementById("errorModal");
-        if (modal) {
-            modal.style.display = "block";
+    </style>
+    <script>
+        function closeModal() {
+            document.getElementById("errorModal").style.display = "none";
         }
-    });
-</script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = document.getElementById("errorModal");
+            if (modal) {
+                modal.style.display = "block";
+            }
+        });
+    </script>
 </head>
 <body>
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <img src="{% static 'images/logo.png' %}" alt="Logo">
-    <a href="#"><span class="icon">🏠</span> Dashboard</a>
-    <a href="{% url 'customer_list' %}" class="active"><span class="icon">👤</span> Customer Hub</a>
-    <a href="{% url 'booking_list' %}"><span class="icon">📦</span> Booking Hub</a>
-    <a href="{% url 'container_list' %}"><span class="icon">🚛</span> Container Hub</a>
-    <a href="{% url 'driver_list' %}"><span class="icon">👥</span> Driver</a>
-    <a href="{% url 'user_list' %}"><span class="icon">👤</span> User Hub</a>
-    <a href="#"><span class="icon">🔔</span> Notification</a>
-    <div class="bottom-links">
-      <a href="#"><span class="icon">⚙️</span> Settings</a>
-      <a href="#"><span class="icon">🚪</span> Logout</a>
-    </div>
-  </div>
+{% include 'includes/sidebar.html' %}
 
-  <!-- Main Content -->
-  <div class="content">
+<div class="content">
     <div class="header">
-      <h2>Customer Form</h2>
-      <a href="{% url 'customer_list' %}" class="btn btn-success">Back to Customer Hub</a>
+        <h2>{% if customer.pk %}Edit Customer{% else %}Add Customer{% endif %}</h2>
+        <a href="{% url 'customer_list' %}" class="btn btn-back">
+            <span>&larr;</span> Back to Customer Hub
+        </a>
     </div>
 
     {% if errors %}
-    <div id="errorModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <h2>Validation Error</h2>
-            <ul>
-                {% for field, error_list in errors.items %}
-                    {% for error in error_list %}
-                        <li>{{ error }}</li>
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <h2>Validation Error</h2>
+                <ul>
+                    {% for field, error_list in errors.items %}
+                        {% for error in error_list %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
                     {% endfor %}
-                {% endfor %}
-            </ul>
+                </ul>
+            </div>
         </div>
-    </div>
     {% endif %}
 
     <div class="card">
-      <div class="card-body">
-        <form method="POST" class="form-horizontal" action="{% if customer.pk %}{% url 'customer_update' customer.pk %}{% else %}{% url 'customer_create' %}{% endif %}">
-          {% csrf_token %}
-          <div class="form-group">
-            <label for="id_name">Name</label>
-            {{ form.name }}
-          </div>
-          <div class="form-group">
-            <label for="id_contact_number">Contact Number</label>
-            {{ form.contact_number }}
-          </div>
-          <div class="form-group">
-            <label for="id_email">Email</label>
-            {{ form.email }}
-          </div>
-          <div class="form-group">
-            <label for="id_address">Address</label>
-            {{ form.address }}
-          </div>
-          <div class="form-group">
-            <label for="id_company_name">Company Name</label>
-            {{ form.company_name }}
-          </div>
-          <div class="form-group">
-            <button type="submit">{% if customer.pk %}Update{% else %}Create{% endif %} Customer</button>
-          </div>
+        <form method="POST" action="{% if customer.pk %}{% url 'customer_update' customer.pk %}{% else %}{% url 'customer_create' %}{% endif %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_name">Name</label>
+                {{ form.name }}
+            </div>
+            <div class="form-group">
+                <label for="id_contact_number">Contact Number</label>
+                {{ form.contact_number }}
+            </div>
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                {{ form.email }}
+            </div>
+            <div class="form-group">
+                <label for="id_address">Address</label>
+                {{ form.address }}
+            </div>
+            <div class="form-group">
+                <label for="id_company_name">Company Name</label>
+                {{ form.company_name }}
+            </div>
+            <button type="submit" class="btn {% if customer.pk %}btn-submit-green{% else %}btn-submit-blue{% endif %}">
+                {% if customer.pk %}Edit Customer{% else %}Add Customer{% endif %}
+            </button>
         </form>
-      </div>
     </div>
-  </div>
+</div>
 </body>
 </html>

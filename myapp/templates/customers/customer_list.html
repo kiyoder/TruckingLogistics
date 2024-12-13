@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Management</title>
     <style>
-        /* Basic Reset */
         * {
             margin: 0;
             padding: 0;
@@ -21,51 +20,6 @@
             color: #333;
         }
 
-        /* Sidebar styling */
-        .sidebar {
-            width: 250px;
-            background-color: #f3f4f6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20px;
-            height: 100vh;
-            position: fixed;
-            left: 0;
-        }
-
-        .sidebar img {
-            width: 100px;
-            margin-bottom: 20px;
-            border-radius: 50%;
-        }
-
-        .sidebar a {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            padding: 15px;
-            text-decoration: none;
-            color: #333;
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .sidebar a.active, .sidebar a:hover {
-            background-color: #e0e7ff;
-            color: #1e3a8a;
-        }
-
-        .sidebar .icon {
-            margin-right: 10px;
-        }
-
-        .sidebar .bottom-links {
-            margin-top: auto;
-            margin-bottom: 20px;
-        }
-
-        /* Main Content */
         .content {
             margin-left: 270px;
             width: calc(100% - 270px);
@@ -77,7 +31,6 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            position: relative;
         }
 
         .header h1 {
@@ -85,30 +38,27 @@
             color: #111827;
         }
 
-        /* Profile Menu */
         .profile-menu {
             position: relative;
-            display: inline-block;
-            margin-left: 20px; /* Added spacing to move button to the right */
         }
 
         .profile-button {
             background-color: #1e3a8a;
-            color: #ffffff;
+            color: white;
             font-size: 16px;
-            padding: 10px;
-            width: 200px; /* Fixed width */
-            height: 50px; /* Fixed height */
+            padding: 12px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            position: relative;
-            gap: 10px;
+            gap: 12px;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 150px;
+            max-width: 100%;
+            justify-content: space-between;
+            width: auto;
         }
 
         .profile-button:hover {
@@ -124,28 +74,32 @@
         }
 
         .profile-username {
-            flex: 1; /* Ensures the username takes up available space */
-            text-align: center; /* Centers text between icon and dropdown arrow */
+            flex-grow: 1;
+            text-align: center;
+            font-weight: 500;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         .profile-dropdown {
             display: none;
             position: absolute;
             right: 0;
-            top: 50px; /* Align directly below the button */
+            top: 60px;
             background-color: #ffffff;
             border: 1px solid #ddd;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-            min-width: 200px; /* Match the button width */
-            padding: 5px 0;
+            min-width: 150px;
+            width: 100%;
         }
 
         .profile-dropdown form button {
             display: flex;
             align-items: center;
-            padding: 10px 15px;
+            padding: 12px 15px;
             width: 100%;
             font-size: 14px;
             color: #333;
@@ -158,7 +112,7 @@
         }
 
         .profile-dropdown form button:hover {
-            background-color: #f0f0f0;
+            background-color: #f1f5f9;
         }
 
         .profile-menu:hover .profile-dropdown,
@@ -166,85 +120,113 @@
             display: block;
         }
 
-        /* Add Button Styling */
-        .add-button {
-            background-color: #1e3a8a;
-            color: #ffffff;
-            font-size: 14px;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            cursor: pointer;
-            display: inline-block;
-        }
-
-        .add-button:hover {
-            background-color: #1a237e;
-        }
-
-        /* Table styling */
         .table-container {
             background-color: #f1f5f9;
             border-radius: 8px;
             overflow-x: auto;
             padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+        }
+
+        thead {
+            background-color: #1e3a8a;
+            color: white;
         }
 
         th, td {
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
-            color: #333;
         }
 
-        th {
-            background-color: #f3f4f6;
-            color: #555;
-            font-weight: bold;
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f5f9;
         }
 
         td.actions {
             display: flex;
-            gap: 5px;
+            gap: 10px;
+            justify-content: flex-start;
         }
 
-        .btn-edit, .btn-delete {
-            padding: 5px 10px;
+        .btn-edit, .btn-delete, .btn-assign {
+            padding: 8px 12px;
             font-size: 14px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             color: white;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s;
         }
 
         .btn-edit {
-            background-color: #1e90ff;
+            background-color: #4caf50;
         }
 
         .btn-edit:hover {
-            background-color: #1c7cd6;
+            background-color: #388e3c;
+            transform: translateY(-2px);
         }
 
         .btn-delete {
-            background-color: #e53e3e;
+            background-color: #f44336;
         }
 
         .btn-delete:hover {
-            background-color: #c53030;
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .btn-assign {
+            background-color: #1e90ff;
+        }
+
+        .btn-assign:hover {
+            background-color: #1c7cd6;
+            transform: translateY(-2px);
+        }
+
+        .add-button-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .add-button {
+            background-color: #1e3a8a;
+            color: white;
+            font-size: 16px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        .add-button:hover {
+            background-color: #162d7d;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
 
 {% include 'includes/sidebar.html' %}
-
 
 <div class="content">
     <div class="header">
@@ -255,11 +237,9 @@
                 <span class="profile-username">{{ user.username }}</span>
             </button>
             <div class="profile-dropdown">
-                <form method="post" action="{% url 'logout' %}" style="margin: 0; padding: 0;">
+                <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
-                    <button type="submit">
-                        <span class="icon">🚪</span> Logout
-                    </button>
+                    <button type="submit">Logout</button>
                 </form>
             </div>
         </div>
@@ -269,40 +249,49 @@
         <table>
             <thead>
             <tr>
-                <th>Customer ID</th>
+                <th>ID</th>
+                <th>Company</th>
                 <th>Name</th>
                 <th>Mobile</th>
                 <th>Email</th>
                 <th>Address</th>
+                <th>Assigned User</th>
                 <th>Actions</th>
-                <th>
-{#                    <form method="POST" action="{% if customer.pk %}{% url 'customer_update' customer.pk %}{% else %}{% url 'customer_create' %}{% endif %}">#}
-{#                        {% csrf_token %}#}
-{#                        {{ form.as_p }}#}
-{#                        <button type="submit" class="add-button">{% if customer.pk %}Update{% else %}Create{% endif %} Customer</button>#}
-{#                    </form>#}
-                    <a href="{% url 'customer_create' %}" class="add-button">Add</a>
-                </th>
             </tr>
             </thead>
             <tbody>
             {% for customer in customers %}
-                <tr>
-                    <td>{{ customer.customer_id }}</td>
-                    <td>{{ customer.name }}</td>
-                    <td>{{ customer.contact_number }}</td>
-                    <td>{{ customer.email }}</td>
-                    <td>{{ customer.address }}</td>
-                    <td class="actions">
-                        <a href="{% url 'customer_update' customer.pk %}" class="btn-edit">Edit</a>
-                        <a href="{% url 'customer_delete' customer.pk %}" class="btn-delete">Delete</a>
-                    </td>
-                    <td></td>
-                </tr>
+            <tr>
+                <td>{{ customer.customer_id }}</td>
+                <td>{{ customer.company_name }}</td>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.contact_number }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.address }}</td>
+                <td>
+                    {% if customer.assigned_user %}
+                    {{ customer.assigned_user.username }}
+                    {% else %}
+                    Unassigned
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    <a href="{% url 'customer_update' customer.pk %}" class="btn-edit">Edit</a>
+                    <a href="{% url 'customer_delete' customer.pk %}" class="btn-delete">Delete</a>
+                    <a href="{% url 'assign_user_to_customer' customer.pk %}" class="btn-assign">Assign</a>
+                </td>
+            </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+
+    <div class="add-button-container">
+        <a href="{% url 'customer_create' %}" class="add-button">
+            <span>+</span> Add Customer
+        </a>
+    </div>
 </div>
+
 </body>
 </html>

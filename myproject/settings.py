@@ -133,3 +133,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'myapp.CustomUser'
 
 LOGIN_REDIRECT_URL = '/customers/'
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

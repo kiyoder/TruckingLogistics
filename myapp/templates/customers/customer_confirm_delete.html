@@ -2,156 +2,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Delete Customer</title>
-  <style>
-    /* Basic Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Customer</title>
+    <style>
 
-    body {
-      display: flex;
-      min-height: 100vh;
-      background-color: #f8f9fa;
-      color: #333;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-    /* Sidebar styling */
-    .sidebar {
-      width: 250px;
-      background-color: #f3f4f6;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 20px;
-      height: 100vh;
-      position: fixed;
-      left: 0;
-    }
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            color: #333;
+        }
 
-    .sidebar img {
-      width: 100px;
-      margin-bottom: 20px;
-      border-radius: 50%;
-    }
+        
 
-    .sidebar a {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      padding: 15px;
-      text-decoration: none;
-      color: #333;
-      font-size: 16px;
-      font-weight: 500;
-    }
 
-    .sidebar a.active, .sidebar a:hover {
-      background-color: #e0e7ff;
-      color: #1e3a8a;
-    }
+        .content {
+            margin-left: 270px;
+            width: calc(100% - 270px);
+            padding: 40px;
+        }
 
-    .sidebar .icon {
-      margin-right: 10px;
-    }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
 
-    .sidebar .bottom-links {
-      margin-top: auto;
-      margin-bottom: 20px;
-    }
+        .card-header h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
 
-    /* Main Content */
-    .content {
-      margin-left: 270px;
-      width: calc(100% - 270px);
-      padding: 40px;
-    }
+        .card-body p {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
 
-    .card {
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 20px;
-      background-color: #ffffff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+        /* Buttons */
+        .card-body .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
 
-    .card-header {
-      font-size: 20px;
-      font-weight: bold;
-      color: #1e3a8a;
-    }
+        .btn-confirm {
+            background-color: #dc3545;
+            color: white;
+        }
 
-    .card-body {
-      margin-top: 10px;
-      font-size: 16px;
-      color: #555;
-    }
+        .btn-confirm:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
 
-    .card-body button {
-      background-color: #dc3545;
-      color: white;
-      font-size: 16px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
+        .btn-cancel {
+            background-color: #1e3a8a;
+            color: white;
+            margin-left: 10px;
+        }
 
-    .card-body button:hover {
-      background-color: #c82333;
-    }
+        .btn-cancel:hover {
+            background-color: #162d7d;
+            transform: translateY(-2px);
+        }
 
-    .card-body a {
-      display: inline-block;
-      margin-top: 15px;
-      text-decoration: none;
-      color: #6c757d;
-      font-size: 16px;
-    }
+        @media (max-width: 768px) {
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
 
-    .card-body a:hover {
-      text-decoration: underline;
-    }
-  </style>
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <img src="{% static 'images/logo.png' %}" alt="Logo">
-    <a href="#"><span class="icon">🏠</span> Dashboard</a>
-    <a href="{% url 'customer_list' %}" class="active"><span class="icon">👤</span> Customer Hub</a>
-    <a href="{% url 'booking_list' %}"><span class="icon">📦</span> Booking Hub</a>
-    <a href="{% url 'container_list' %}"><span class="icon">🚛</span> Container Hub</a>
-    <a href="{% url 'driver_list' %}"><span class="icon">👥</span> Driver</a>
-    <a href="{% url 'user_list' %}"><span class="icon">👤</span> User Hub</a>
-    <a href="#"><span class="icon">🔔</span> Notification</a>
-    <div class="bottom-links">
-      <a href="#"><span class="icon">⚙️</span> Settings</a>
-      <a href="#"><span class="icon">🚪</span> Logout</a>
-    </div>
-  </div>
 
-  <!-- Main Content -->
-  <div class="content">
+{% include 'includes/sidebar.html' %}
+
+<div class="content">
     <div class="card">
-      <div class="card-header">
-        <h2>Delete Customer</h2>
-      </div>
-      <div class="card-body">
-        <p>Are you sure you want to delete "{{ customer.name }}"?</p>
-        <form method="POST">
-          {% csrf_token %}
-          <button type="submit">Confirm</button>
-          <a href="{% url 'customer_list' %}">Cancel</a>
-        </form>
-      </div>
+        <div class="card-header">
+            <h2>Delete Customer</h2>
+        </div>
+        <div class="card-body">
+            <p>Are you sure you want to delete "<strong>{{ customer.name }}</strong>"?</p>
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-confirm">Confirm</button>
+                <a href="{% url 'customer_list' %}" class="btn btn-cancel">Cancel</a>
+            </form>
+        </div>
     </div>
-  </div>
+</div>
 </body>
 </html>

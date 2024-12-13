@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
 
 # Create your models here.
+from django.conf import settings
 
 class Customer(models.Model):
     customer_id = models.AutoField(primary_key=True)
@@ -12,8 +13,16 @@ class Customer(models.Model):
     address = models.TextField()
     company_name = models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.name
+    assigned_user = models.ForeignKey(
+            settings.AUTH_USER_MODEL,
+            on_delete=models.SET_NULL,
+            null=True,
+            blank=True,
+            related_name='assigned_customers'
+    )
+
+
+
 
 class CustomUser(AbstractUser):
     ROLE_CHOICES = [
@@ -78,9 +87,7 @@ class Container(models.Model):
     SIZE_CHOICES = [
         (10, '10'),
         (20, '20'),
-        (30, '30'),
         (40, '40'),
-        (50, '50'),
     ]
 
     container_id = models.AutoField(primary_key=True)
@@ -89,9 +96,17 @@ class Container(models.Model):
     weight = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     contents = models.TextField()
     status = models.CharField(max_length=255)
+    driver = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='containers')
+    def get_incremented_booking_number(self):
+            sibling_containers = Container.objects.filter(booking=self.booking).order_by('container_id')
+            index = list(sibling_containers).index(self) + 1
+            return f"{self.booking.booking_number}-{index:02d}"
 
     def __str__(self):
         return f"Container {self.container_id} for Booking {self.booking}"
+
+
+
     
 class ContainerStatus(models.Model):
     status_id = models.AutoField(primary_key=True)
@@ -108,10 +123,10 @@ class Driver(models.Model):
     driver_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, default='Unknown')
     
-    # Foreign Keys to other models
+
     booking = models.ForeignKey('Booking', on_delete=models.SET_NULL, null=True, blank=True)
     customer = models.ForeignKey('Customer', on_delete=models.SET_NULL, null=True, blank=True)
-    container = models.ForeignKey('Container', on_delete=models.SET_NULL, null=True, blank=True)
+    container = models.ForeignKey('Container', on_delete=models.SET_NULL, null=True, blank=True, related_name='driver_assignments')
 
     def __str__(self):
         return self.name
