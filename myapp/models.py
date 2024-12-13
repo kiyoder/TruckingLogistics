@@ -105,8 +105,6 @@ class Container(models.Model):
     def __str__(self):
         return f"Container {self.container_id} for Booking {self.booking}"
 
-
-
     
 class ContainerStatus(models.Model):
     status_id = models.AutoField(primary_key=True)
