@@ -12,6 +12,33 @@
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+
+        .content {
+            margin-left: 270px;
+            width: calc(100% - 270px);
+            padding: 40px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            font-size: 28px;
+            color: #1e3a8a;
+            font-weight: bold;
+        }
+
         .profile-menu {
             position: relative;
         }
@@ -94,38 +121,22 @@
             display: block;
         }
 
-        body {
-            display: flex;
-            min-height: 100vh;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-
-        .content {
-            margin-left: 270px;
-            width: calc(100% - 270px);
-            padding: 40px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .header h2 {
-            font-size: 24px;
-            color: #1e3a8a;
-        }
-
         .table-container {
-            background-color: #f1f5f9;
-            border-radius: 8px;
-            overflow-x: auto;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-bottom: 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-header {
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            background-color: #1e3a8a;
+            color: white;
         }
 
         table {
@@ -134,18 +145,17 @@
         }
 
         thead {
-            background-color: #1e3a8a;
-            color: white;
+            background-color: #f1f5f9;
         }
 
         th, td {
-            padding: 15px;
+            padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
 
         tbody tr:nth-child(even) {
-            background-color: #f8f9fa;
+            background-color: #f9fafb;
         }
 
         tbody tr:hover {
@@ -209,6 +219,22 @@
             background-color: #1c7cd6;
             transform: translateY(-2px);
         }
+
+        .status-header-pending {
+    background-color: #f59e0b; /* Amber */
+}
+
+.status-header-ongoing {
+    background-color: #2563eb; /* Blue */
+}
+
+.status-header-completed {
+    background-color: #10b981; /* Green */
+}
+
+.status-header-cancelled {
+    background-color: #ef4444; /* Red */
+}
     </style>
 </head>
 <body>
@@ -231,23 +257,28 @@
         </div>
     </div>
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Container Number</th>
-                    <th>Name</th>
-                    <th>Mobile</th>
-                    <th>Size</th>
-                    <th>Weight (kg)</th>
-                    <th>Contents</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if containers %}
-                    {% for container in containers %}
+    {% for status, containers_group in grouped_containers.items %}
+        <div class="table-container">
+
+
+            <div class="status-header status-header-{{ status|lower }}">
+                {{ status|title }} Containers
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Container Number</th>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Size</th>
+                        <th>Weight (kg)</th>
+                        <th>Contents</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for container in containers_group %}
                     <tr>
                         <td>{{ container.get_incremented_booking_number }}</td>
                         <td>{{ container.booking.customer.name }}</td>
@@ -257,18 +288,19 @@
                         <td>{{ container.contents }}</td>
                         <td class="status status-{{ container.status|lower }}">{{ container.status }}</td>
                         <td class="actions">
-                            <a href="{% url 'start_container' container.pk %}" class="btn-start">Start</a>
-                            <a href="{% url 'complete_container' container.pk %}" class="btn-complete">Complete</a>
-                            <a href="{% url 'cancel_container' container.pk %}" class="btn-cancel">Cancel</a>
+                            {% if container.status == "Pending" %}
+                                <a href="{% url 'start_container' container.pk %}" class="btn-start">Start</a>
+                            {% elif container.status == "Ongoing" %}
+                                <a href="{% url 'complete_container' container.pk %}" class="btn-complete">Complete</a>
+                                <a href="{% url 'cancel_container' container.pk %}" class="btn-cancel">Cancel</a>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="8" style="text-align: center;">No containers found. Add one to get started!</td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
-    </div>
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
 </div>
+</body>
+</html>

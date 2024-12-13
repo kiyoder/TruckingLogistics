@@ -1,3 +1,4 @@
+from xml import dom
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 
@@ -501,14 +502,21 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseForbidden
 from .models import Container
 
+from collections import defaultdict
+
 def driver_dashboard(request):
     if request.user.role != 'driver':
         return HttpResponseForbidden("You do not have permission to access this page.")
 
-    # Fetch containers and related booking & customer details
+    # Fetch containers and group them by status
     containers = Container.objects.select_related('booking__customer')
+    grouped_containers = defaultdict(list)
+
+    for container in containers:
+        grouped_containers[container.status].append(container)
+
     context = {
-        'containers': containers,
+        'grouped_containers': dict(grouped_containers),  # Convert defaultdict to regular dict for template rendering
     }
     return render(request, 'dashboard/driver_dashboard.html', context)
 
