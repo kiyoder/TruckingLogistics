@@ -261,11 +261,11 @@ def container_create(request):
             container = form.save(commit=False)
             container.status = "Pending"
             container.save()
+            container.update_booking_status()
             return redirect('container_list')
     else:
         form = ContainerForm()
     return render(request, 'container/container_form.html', {'form': form})
-
 
 def container_update(request, pk):
     container = Container.objects.get(container_id=pk)
@@ -273,6 +273,7 @@ def container_update(request, pk):
         form = ContainerForm(request.POST, instance=container)
         if form.is_valid():
             form.save()
+            container.update_booking_status()
             return redirect('container_list')
     else:
         form = ContainerForm(instance=container)
@@ -492,6 +493,43 @@ def assign_user_to_customer(request, pk):
         return redirect('customer_list')
 
     return render(request, 'customers/assign_user.html', {'customer': customer, 'users': users})
+
+
+
+#DRIVER
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseForbidden
+from .models import Container
+
+def driver_dashboard(request):
+    if request.user.role != 'driver':
+        return HttpResponseForbidden("You do not have permission to access this page.")
+
+    # Fetch containers and related booking & customer details
+    containers = Container.objects.select_related('booking__customer')
+    context = {
+        'containers': containers,
+    }
+    return render(request, 'dashboard/driver_dashboard.html', context)
+
+def start_container(request, container_id):
+    container = get_object_or_404(Container, pk=container_id)
+    container.status = 'Ongoing'  # Update status to Ongoing
+    container.save()
+    return redirect('driver_dashboard')
+
+def complete_container(request, container_id):
+    container = get_object_or_404(Container, pk=container_id)
+    container.status = 'Completed'  # Update status to Completed
+    container.save()
+    return redirect('driver_dashboard')
+
+def cancel_container(request, container_id):
+    container = get_object_or_404(Container, pk=container_id)
+    container.status = 'Cancelled'  # Update status to Cancelled
+    container.save()
+    return redirect('driver_dashboard')
+
 
 
 

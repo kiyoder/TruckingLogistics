@@ -107,16 +107,23 @@ class BookingForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Hide 'status' for new bookings
         if not self.instance or not self.instance.pk:
             self.fields.pop('status')
         else:
             self.fields['booking_number'].initial = self.instance.booking_number
-
-        # Customize customer dropdown to display names
         self.fields['customer'].label_from_instance = lambda obj: f"{obj.name} ({obj.company_name})"
 
+
 class ContainerForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Ongoing', 'Ongoing'),
+        ('Completed', 'Completed'),
+        ('Cancelled', 'Cancelled'),
+    ]
+
+    status = forms.ChoiceField(choices=STATUS_CHOICES, initial='Pending', widget=forms.Select(attrs={'class': 'form-control'}))
+
     class Meta:
         model = Container
         fields = '__all__'
@@ -124,19 +131,20 @@ class ContainerForm(forms.ModelForm):
             'booking': forms.Select(attrs={'class': 'form-control'}),
             'size': forms.Select(attrs={'class': 'form-control'}),
             'weight': forms.NumberInput(attrs={'class': 'form-control'}),
-            'contents': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'cols': 252, }),
+            'contents': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'cols': 252}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if not self.instance.pk:
-            self.fields.pop('status')
-            
+            self.fields['status'].initial = 'Pending'
+
     def clean_weight(self):
         weight = self.cleaned_data.get('weight')
         if weight < 0:
             raise forms.ValidationError("Weight cannot be negative.")
         return weight
+
             
 class ContainerStatusForm(forms.ModelForm):
     class Meta:

@@ -4,43 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Management</title>
+    <title>Driver Dashboard</title>
     <style>
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
-
-        body {
-            display: flex;
-            min-height: 100vh;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-
-
-        .content {
-            margin-left: 270px;
-            width: calc(100% - 270px);
-            padding: 40px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .header h2 {
-            font-size: 24px;
-            color: #111827;
-        }
-
-
         .profile-menu {
             position: relative;
         }
@@ -123,6 +94,30 @@
             display: block;
         }
 
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .content {
+            margin-left: 270px;
+            width: calc(100% - 270px);
+            padding: 40px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+        }
 
         .table-container {
             background-color: #f1f5f9;
@@ -130,6 +125,7 @@
             overflow-x: auto;
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
         }
 
         table {
@@ -156,13 +152,6 @@
             background-color: #f1f5f9;
         }
 
-        td.actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-start;
-        }
-
-
         .status {
             font-weight: bold;
         }
@@ -183,8 +172,7 @@
             color: #ef4444; /* Red */
         }
 
-
-        .btn-edit, .btn-delete, .btn-confirm, .btn-cancel {
+        .btn-complete, .btn-cancel, .btn-start {
             padding: 8px 12px;
             font-size: 14px;
             border: none;
@@ -195,68 +183,30 @@
             transition: background-color 0.3s ease, transform 0.2s;
         }
 
-        .btn-edit {
+        .btn-complete {
             background-color: #4caf50;
         }
 
-        .btn-edit:hover {
+        .btn-complete:hover {
             background-color: #388e3c;
             transform: translateY(-2px);
         }
 
-        .btn-delete {
+        .btn-cancel {
             background-color: #f44336;
         }
 
-        .btn-delete:hover {
+        .btn-cancel:hover {
             background-color: #d32f2f;
             transform: translateY(-2px);
         }
 
-        .btn-confirm {
-            {#background-color: #10b981; /* Green */#}
+        .btn-start {
+            background-color: #1e90ff;
         }
 
-        .btn-confirm:hover {
-            background-color: #059669;
-        }
-
-        .btn-cancel {
-            {#background-color: #f97316; /* Orange */#}
-        }
-
-        .btn-cancel:hover {
-            background-color: #ea580c;
-        }
-
-
-        .add-button-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        .add-button {
-            background-color: #1e3a8a;
-            color: white;
-            font-size: 16px;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background-color 0.3s ease, transform 0.2s;
-        }
-
-        .add-button span {
-            font-size: 18px;
-        }
-
-        .add-button:hover {
-            background-color: #162d7d;
+        .btn-start:hover {
+            background-color: #1c7cd6;
             transform: translateY(-2px);
         }
     </style>
@@ -266,7 +216,7 @@
 
 <div class="content">
     <div class="header">
-        <h2>Booking Management</h2>
+        <h2>Driver Dashboard</h2>
         <div class="profile-menu">
             <button class="profile-button">
                 <span class="profile-icon"></span>
@@ -284,71 +234,41 @@
     <div class="table-container">
         <table>
             <thead>
-            <tr>
-                <th>Booking Number</th>
-                <th>Customer</th>
-                <th>Origin</th>
-                <th>Destination</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
+                <tr>
+                    <th>Container Number</th>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Size</th>
+                    <th>Weight (kg)</th>
+                    <th>Contents</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
-            {% if bookings %}
-                {% for booking in bookings %}
+                {% if containers %}
+                    {% for container in containers %}
                     <tr>
-                        <td>{{ booking.booking_number }}</td>
-                        <td>
-                            {{ booking.customer.name }}
-                            {% if booking.customer.company_name %}
-                            ({{ booking.customer.company_name }})
-                            {% endif %}
-                        </td>
-                        <td>{{ booking.origin }}</td>
-                        <td>{{ booking.destination }}</td>
-                        <td>
-                            <span class="status 
-                                {% if booking.status == 'Ongoing' %}status-ongoing
-                                {% elif booking.status == 'Pending' %}status-pending
-                                {% elif booking.status == 'Completed' %}status-completed
-                                {% elif booking.status == 'Cancelled' %}status-cancelled
-                                {% endif %}">
-                                {{ booking.status }}
-                            </span>
-                        </td>
+                        <td>{{ container.get_incremented_booking_number }}</td>
+                        <td>{{ container.booking.customer.name }}</td>
+                        <td>{{ container.booking.customer.contact_number }}</td>
+                        <td>{{ container.size }}</td>
+                        <td>{{ container.weight|floatformat:2 }}</td>
+                        <td>{{ container.contents }}</td>
+                        <td class="status status-{{ container.status|lower }}">{{ container.status }}</td>
                         <td class="actions">
-                            <a href="{% url 'booking_update' booking.pk %}" class="btn-edit">Edit</a>
-                            <a href="{% url 'booking_delete' booking.pk %}" class="btn-delete">Delete</a>
-                            {% if booking.status == 'Pending' %}
-                                <a href="{% url 'booking_confirm' booking.pk %}" class="btn-confirm">✔️</a>
-                            {% elif booking.status != 'Cancelled' %}
-                                <a href="#" onclick="confirmCancel('{{ booking.pk }}')" class="btn-cancel">⛔</a>
-                            {% endif %}
+                            <a href="{% url 'start_container' container.pk %}" class="btn-start">Start</a>
+                            <a href="{% url 'complete_container' container.pk %}" class="btn-complete">Complete</a>
+                            <a href="{% url 'cancel_container' container.pk %}" class="btn-cancel">Cancel</a>
                         </td>
                     </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="6" style="text-align: center;">No bookings found. Add one to get started!</td>
-                </tr>
-            {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="8" style="text-align: center;">No containers found. Add one to get started!</td>
+                    </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>
-
-    <div class="add-button-container">
-        <a href="{% url 'booking_create' %}" class="add-button">
-            <span>+</span> Add Booking
-        </a>
-    </div>
 </div>
-
-<script>
-    function confirmCancel(bookingId) {
-        if (confirm("Are you sure you want to cancel this booking?")) {
-            window.location.href = `/bookings/cancel/${bookingId}/`;
-        }
-    }
-</script>
-</div>
-

@@ -26,6 +26,13 @@ from myapp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.CustomLoginView.as_view(template_name='users/login.html'), name='login'),
+    
+    #Dashboard URLS
+    path('driver_dashboard/', views.driver_dashboard, name='driver_dashboard'),
+    path('container/start/<int:container_id>/', views.start_container, name='start_container'),
+    path('container/complete/<int:container_id>/', views.complete_container, name='complete_container'),
+    path('container/cancel/<int:container_id>/', views.cancel_container, name='cancel_container'),
+
 
     # Customer URLs
     path('customers/', views.customer_list, name='customer_list'),

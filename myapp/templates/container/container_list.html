@@ -20,8 +20,25 @@
             background-color: #f8f9fa;
             color: #333;
         }
+        .status {
+            font-weight: bold;
+        }
 
+        .status-pending {
+            color: #f59e0b; /* Amber */
+        }
 
+        .status-ongoing {
+            color: #2563eb; /* Blue */
+        }
+
+        .status-completed {
+            color: #10b981; /* Green */
+        }
+
+        .status-cancelled {
+            color: #ef4444; /* Red */
+        }
         .content {
             margin-left: 270px;
             width: calc(100% - 270px);
@@ -257,10 +274,11 @@
         <table>
             <thead>
             <tr>
-                <th>Booking Number</th>
+                <th>Container Number</th>
                 <th>Size</th>
                 <th>Weight (kg)</th>
                 <th>Contents</th>
+                <th>Status</th>
                 <th>Assigned Driver</th>
                 <th>Actions</th>
             </tr>
@@ -273,6 +291,7 @@
                 <td>{{ container.size }}</td>
                 <td>{{ container.weight|floatformat:2 }}</td>
                 <td>{{ container.contents }}</td>
+                <td class="status status-{{ container.status|lower }}">{{ container.status }}</td>
                 <td>
                     {% if container.driver %}
                     {{ container.driver.username }}
@@ -283,13 +302,13 @@
                 <td class="actions">
                     <a href="{% url 'container_update' container.pk %}" class="btn-edit">Edit</a>
                     <a href="{% url 'container_delete' container.pk %}" class="btn-delete">Delete</a>
-                    <a href="{% url 'assign_driver' container.pk %}" class="btn-assign">Assign
+                    <a href="{% url 'assign_driver' container.pk %}" class="btn-assign">Assign</a>
                 </td>
             </tr>
             {% endfor %}
             {% else %}
             <tr>
-                <td colspan="6" style="text-align: center;">No containers found. Add one to get started!</td>
+                <td colspan="7" style="text-align: center;">No containers found. Add one to get started!</td>
             </tr>
             {% endif %}
             </tbody>
@@ -304,4 +323,3 @@
 </div>
 </body>
 </html>
-
