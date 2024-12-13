@@ -59,16 +59,9 @@
     </a>
     <a href="{% url 'container_list' %}" class="{% if request.resolver_match.url_name == 'container_list' %}active{% endif %}">
         <span class="icon">🚛</span> Container Hub
-    </a>
-    <a href="{% url 'driver_list' %}" class="{% if request.resolver_match.url_name == 'driver_list' %}active{% endif %}">
-        <span class="icon">👥</span> Driver
-    </a>
+
     <a href="{% url 'user_list' %}" class="{% if request.resolver_match.url_name == 'user_list' %}active{% endif %}">
-        <span class="icon">👤</span> User Hub
+        <span class="icon">👥</span> User Hub
     </a>
-    <a href="#"><span class="icon">🔔</span> Notification</a>
-    <div class="bottom-links">
-        <a href="#"><span class="icon">⚙️</span> Settings</a>
-        <a href="#"><span class="icon">🚪</span> Logout</a>
-    </div>
 </div>
+

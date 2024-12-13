@@ -80,4 +80,6 @@ urlpatterns = [
     path('validate-username/', views.validate_username, name='validate_username'),
     path('validate-email/', views.validate_email, name='validate_email'),
 
+    path('customers/assign/<int:pk>/', views.assign_user_to_customer, name='assign_user_to_customer'),
+    path('containers/assign/<int:container_id>/', views.assign_driver, name='assign_driver'),
 ]

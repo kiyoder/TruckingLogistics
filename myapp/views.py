@@ -78,7 +78,7 @@ def customer_update(request, pk):
             messages.success(request, "Customer updated successfully.")
             return redirect('customer_list')
         else:
-            # Pass form errors to template
+
             return render(request, 'customers/customer_form.html', {'form': form, 'errors': form.errors, 'customer': customer})
     else:
         form = CustomerForm(instance=customer)
@@ -105,7 +105,7 @@ def user_list(request):
     users_by_role = {}
 
     for user in users:
-        # Use the role directly, assuming it's a string field
+
         role = user.role if user.role else "Unassigned Role"
         if role not in users_by_role:
             users_by_role[role] = []
@@ -128,19 +128,19 @@ from .forms import UserForm
 from .models import CustomUser
 
 def user_update(request, pk):
-    user = get_object_or_404(CustomUser, pk=pk)  # Fetch the user object
+    user = get_object_or_404(CustomUser, pk=pk)
     if request.method == 'POST':
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
-            # Save the role explicitly since it's handled in the form
-            user.role = request.POST.get('role')  # Get the selected role
+
+            user.role = request.POST.get('role')
             form.save()
             messages.success(request, "User updated successfully.")
-            return redirect('user_list')  # Redirect to user list after saving
+            return redirect('user_list')
         else:
             messages.error(request, "Error updating user. Please check the form.")
     else:
-        form = UserForm(instance=user)  # Pre-fill the form with the existing data
+        form = UserForm(instance=user)
     return render(request, 'user/user_form.html', {'form': form, 'user': user})
 
 
@@ -149,11 +149,11 @@ from django.contrib import messages
 from .models import CustomUser
 
 def user_delete(request, pk):
-    user = get_object_or_404(CustomUser, id=pk)  # Use 'id' instead of 'user_id'
+    user = get_object_or_404(CustomUser, id=pk)
     if request.method == 'POST':
         user.delete()
         messages.success(request, "User deleted successfully.")
-        return redirect('user_list')  # Redirect to the user list after deletion
+        return redirect('user_list')
     return render(request, 'user/user_confirm_delete.html', {'user': user})
 
 from django import forms
@@ -161,8 +161,8 @@ from .models import CustomUser
 
 class UserForm(forms.ModelForm):
     class Meta:
-        model = CustomUser  # Use your custom user model
-        fields = ['username', 'email', 'role']  # Ensure 'role' is included
+        model = CustomUser
+        fields = ['username', 'email', 'role']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
@@ -187,7 +187,7 @@ def booking_create(request):
         form = BookingForm(request.POST)
         if form.is_valid():
             booking = form.save(commit=False)
-            # Automatically set booking_number and created_by
+
             booking_number = form.cleaned_data['booking_number']
             booking.booking_number = booking_number
             booking.created_by = request.user
@@ -195,7 +195,7 @@ def booking_create(request):
             booking.save()
             return redirect('booking_list')
     else:
-        # Generate the booking number
+
         current_year = datetime.now().year
         last_booking = Booking.objects.filter(booking_number__startswith=str(current_year)).order_by('id').last()
         if last_booking:
@@ -208,24 +208,24 @@ def booking_create(request):
 
     return render(request, 'booking/booking_form.html', {'form': form})
 
-# views.py
+
 def booking_update(request, pk):
-    # Fetch the existing booking object
+
     booking = get_object_or_404(Booking, pk=pk)
     if request.method == 'POST':
-        form = BookingForm(request.POST, instance=booking)  # Pass instance to update
+        form = BookingForm(request.POST, instance=booking)
         if form.is_valid():
-            form.save()  # Save the updated instance
+            form.save()
             return redirect('booking_list')
     else:
-        form = BookingForm(instance=booking)  # Pass instance for pre-filled form
+        form = BookingForm(instance=booking)
 
     return render(request, 'booking/booking_form.html', {'form': form, 'booking': booking})
 
 
 def booking_delete(request, pk):
-    #booking = Booking.objects.get(booking_id=pk)
-    booking = Booking.objects.get(id=pk) #updated
+
+    booking = Booking.objects.get(id=pk)
     if request.method == 'POST':
         booking.delete()
         return redirect('booking_list')
@@ -250,6 +250,8 @@ from .forms import ContainerForm
 
 def container_list(request):
     containers = Container.objects.all()
+    for container in containers:
+        container.incremented_booking_number = container.get_incremented_booking_number()
     return render(request, 'container/container_list.html', {'containers': containers})
 
 def container_create(request):
@@ -257,7 +259,7 @@ def container_create(request):
         form = ContainerForm(request.POST)
         if form.is_valid():
             container = form.save(commit=False)
-            container.status = "Pending"  # Set default status explicitly
+            container.status = "Pending"
             container.save()
             return redirect('container_list')
     else:
@@ -282,6 +284,20 @@ def container_delete(request, pk):
         container.delete()
         return redirect('container_list')
     return render(request, 'container/container_confirm_delete.html', {'container': container})
+
+def assign_driver(request, container_id):
+    container = get_object_or_404(Container, pk=container_id)
+    drivers = CustomUser.objects.filter(role='driver')
+
+    if request.method == 'POST':
+        driver_id = request.POST.get('driver_id')
+        driver = get_object_or_404(CustomUser, pk=driver_id)
+        container.driver = driver
+        container.save()
+        return redirect('container_list')
+
+    return render(request, 'container/assign_driver.html', {'container': container, 'drivers': drivers})
+
 
 #CONTAINER STATUS
 from .models import ContainerStatus
@@ -323,7 +339,7 @@ from .models import Driver
 from .forms import DriverForm
 
 def driver_create(request):
-    # Fetching the data to populate select fields
+
     bookings = Booking.objects.all()
     customers = Customer.objects.all()
     containers = Container.objects.all()
@@ -331,8 +347,8 @@ def driver_create(request):
     if request.method == 'POST':
         form = DriverForm(request.POST)
         if form.is_valid():
-            form.save()  # Save the new driver to the database
-            return redirect('/drivers/')  # Redirect directly to the list of drivers
+            form.save()
+            return redirect('/drivers/')
     else:
         form = DriverForm()
 
@@ -363,7 +379,7 @@ def driver_delete(request, pk):
     driver = get_object_or_404(Driver, pk=pk)
     if request.method == 'POST':
         driver.delete()
-        return redirect('driver_list')  # Redirect to the driver list after deletion
+        return redirect('driver_list')
     return render(request, 'driver/driver_confirm_delete.html', {'driver': driver})
 
 def driver_form(request, pk=None):
@@ -376,7 +392,7 @@ def driver_form(request, pk=None):
         form = DriverForm(request.POST, instance=driver)
         if form.is_valid():
             form.save()
-            return redirect('driver_list')  # Redirect to the driver list after saving
+            return redirect('driver_list')
     else:
         form = DriverForm(instance=driver)
 
@@ -397,7 +413,7 @@ def register(request):
             messages.success(request, "Account created successfully!")
             return redirect('login')
         else:
-            # Add validation errors to messages
+
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field.capitalize()}: {error}")
@@ -410,7 +426,7 @@ from django.contrib.auth.views import LoginView
 
 class CustomLoginView(LoginView):
     def dispatch(self, request, *args, **kwargs):
-        # Redirect authenticated users to the customer list page
+
         if request.user.is_authenticated:
             messages.info(request, f"You are already logged in as {request.user.username}.")
             return redirect('customer_list')
@@ -450,8 +466,32 @@ def logout_view(request):
     """Logs out the user and clears any remaining messages."""
     logout(request)
     for key in list(request.session.keys()):
-        if key.startswith('_'):  # Preserve Django's session integrity
+        if key.startswith('_'):
             continue
         del request.session[key]
     messages.success(request, "You have been logged out successfully.")
     return redirect('login')
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Customer, CustomUser
+from django.contrib import messages
+
+def assign_user_to_customer(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    users = CustomUser.objects.filter(role='customer')
+
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        if user_id:
+            assigned_user = get_object_or_404(CustomUser, pk=user_id)
+            customer.assigned_user = assigned_user
+            customer.save()
+            messages.success(request, f"User {assigned_user.username} assigned to customer {customer.name}.")
+        else:
+            messages.error(request, "No user selected for assignment.")
+        return redirect('customer_list')
+
+    return render(request, 'customers/assign_user.html', {'customer': customer, 'users': users})
+
+
+

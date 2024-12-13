@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Management</title>
     <style>
-        /* Basic Reset */
         * {
             margin: 0;
             padding: 0;
@@ -21,8 +20,6 @@
             color: #333;
         }
 
-        
-        /* Main Content */
         .content {
             margin-left: 270px;
             width: calc(100% - 270px);
@@ -41,7 +38,6 @@
             color: #111827;
         }
 
-        /* Profile Menu */
         .profile-menu {
             position: relative;
         }
@@ -62,7 +58,7 @@
             min-width: 150px;
             max-width: 100%;
             justify-content: space-between;
-            width: auto; /* Adapts to content */
+            width: auto;
         }
 
         .profile-button:hover {
@@ -83,7 +79,7 @@
             font-weight: 500;
             overflow: hidden;
             white-space: nowrap;
-            text-overflow: ellipsis; /* Handles long usernames */
+            text-overflow: ellipsis;
         }
 
         .profile-dropdown {
@@ -97,7 +93,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             min-width: 150px;
-            width: 100%; /* Matches the profile button width */
+            width: 100%;
         }
 
         .profile-dropdown form button {
@@ -124,7 +120,6 @@
             display: block;
         }
 
-        /* Table Styling */
         .table-container {
             background-color: #f1f5f9;
             border-radius: 8px;
@@ -163,8 +158,7 @@
             justify-content: flex-start;
         }
 
-        /* Action Buttons */
-        .btn-edit, .btn-delete {
+        .btn-edit, .btn-delete, .btn-assign {
             padding: 8px 12px;
             font-size: 14px;
             border: none;
@@ -193,7 +187,15 @@
             transform: translateY(-2px);
         }
 
-        /* Add Customer Button */
+        .btn-assign {
+            background-color: #1e90ff;
+        }
+
+        .btn-assign:hover {
+            background-color: #1c7cd6;
+            transform: translateY(-2px);
+        }
+
         .add-button-container {
             display: flex;
             justify-content: flex-end;
@@ -214,10 +216,6 @@
             align-items: center;
             gap: 8px;
             transition: background-color 0.3s ease, transform 0.2s;
-        }
-
-        .add-button span {
-            font-size: 18px;
         }
 
         .add-button:hover {
@@ -257,23 +255,32 @@
                 <th>Mobile</th>
                 <th>Email</th>
                 <th>Address</th>
+                <th>Assigned User</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             {% for customer in customers %}
-                <tr>
-                    <td data-label="ID">{{ customer.customer_id }}</td>
-                    <td data-label="Company">{{ customer.company_name }}</td>
-                    <td data-label="Name">{{ customer.name }}</td>
-                    <td data-label="Mobile">{{ customer.contact_number }}</td>
-                    <td data-label="Email">{{ customer.email }}</td>
-                    <td data-label="Address">{{ customer.address }}</td>
-                    <td data-label="Actions" class="actions">
-                        <a href="{% url 'customer_update' customer.pk %}" class="btn-edit">Edit</a>
-                        <a href="{% url 'customer_delete' customer.pk %}" class="btn-delete">Delete</a>
-                    </td>
-                </tr>
+            <tr>
+                <td>{{ customer.customer_id }}</td>
+                <td>{{ customer.company_name }}</td>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.contact_number }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.address }}</td>
+                <td>
+                    {% if customer.assigned_user %}
+                    {{ customer.assigned_user.username }}
+                    {% else %}
+                    Unassigned
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    <a href="{% url 'customer_update' customer.pk %}" class="btn-edit">Edit</a>
+                    <a href="{% url 'customer_delete' customer.pk %}" class="btn-delete">Delete</a>
+                    <a href="{% url 'assign_user_to_customer' customer.pk %}" class="btn-assign">Assign</a>
+                </td>
+            </tr>
             {% endfor %}
             </tbody>
         </table>

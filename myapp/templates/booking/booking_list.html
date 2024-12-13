@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Management</title>
     <style>
-        /* Basic Reset */
+
         * {
             margin: 0;
             padding: 0;
@@ -21,7 +21,7 @@
             color: #333;
         }
 
-        /* Main Content */
+
         .content {
             margin-left: 270px;
             width: calc(100% - 270px);
@@ -40,7 +40,7 @@
             color: #111827;
         }
 
-        /* Profile Menu */
+
         .profile-menu {
             position: relative;
         }
@@ -123,7 +123,7 @@
             display: block;
         }
 
-        /* Table Styling */
+
         .table-container {
             background-color: #f1f5f9;
             border-radius: 8px;
@@ -162,7 +162,7 @@
             justify-content: flex-start;
         }
 
-        /* Status Styling */
+
         .status {
             font-weight: bold;
         }
@@ -183,7 +183,7 @@
             color: #ef4444; /* Red */
         }
 
-        /* Action Buttons */
+
         .btn-edit, .btn-delete, .btn-confirm, .btn-cancel {
             padding: 8px 12px;
             font-size: 14px;
@@ -229,7 +229,7 @@
             background-color: #ea580c;
         }
 
-        /* Add Booking Button */
+
         .add-button-container {
             display: flex;
             justify-content: flex-end;
@@ -298,7 +298,12 @@
                 {% for booking in bookings %}
                     <tr>
                         <td>{{ booking.booking_number }}</td>
-                        <td>{{ booking.customer }}</td>
+                        <td>
+                            {{ booking.customer.name }}
+                            {% if booking.customer.company_name %}
+                            ({{ booking.customer.company_name }})
+                            {% endif %}
+                        </td>
                         <td>{{ booking.origin }}</td>
                         <td>{{ booking.destination }}</td>
                         <td>
